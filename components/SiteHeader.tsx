@@ -10,12 +10,55 @@ export default function SiteHeader() {
           <a href="/#tool" className="hover:text-white">
             Tool
           </a>
+
+          <div className="relative group">
+            <button className="hover:text-white">
+              Learn
+            </button>
+
+            <div className="absolute left-0 top-full pt-4 hidden group-hover:block">
+              <div className="w-72 rounded-2xl border border-white/10 bg-[#101827] p-3 shadow-2xl">
+                <a
+                  href="/youtube-comment-picker"
+                  className="block rounded-xl px-4 py-3 hover:bg-white/5"
+                >
+                  <p className="font-bold text-white">YouTube Comment Picker</p>
+                  <p className="text-xs text-zinc-500 mt-1">
+                    Pick winners from YouTube comments.
+                  </p>
+                </a>
+
+                <a
+                  href="/youtube-shorts-giveaway-picker"
+                  className="block rounded-xl px-4 py-3 hover:bg-white/5"
+                >
+                  <p className="font-bold text-white">YouTube Shorts Picker</p>
+                  <p className="text-xs text-zinc-500 mt-1">
+                    Giveaway picker for Shorts comments.
+                  </p>
+                </a>
+
+                <a
+                  href="/random-youtube-comment-picker"
+                  className="block rounded-xl px-4 py-3 hover:bg-white/5"
+                >
+                  <p className="font-bold text-white">Random Comment Picker</p>
+                  <p className="text-xs text-zinc-500 mt-1">
+                    Random YouTube winner generator.
+                  </p>
+                </a>
+              </div>
+            </div>
+          </div>
+
           <a href="/#features" className="hover:text-white">
             Features
           </a>
+
           <a href="/#how-it-works" className="hover:text-white">
             How it works
           </a>
+
           <a href="/#faq" className="hover:text-white">
             FAQ
           </a>
