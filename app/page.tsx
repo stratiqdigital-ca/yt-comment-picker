@@ -1,9 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import toast from "react-hot-toast";
 
 import Hero from "../components/Hero";
-import SiteHeader from "../components/SiteHeader";
 import SiteFooter from "../components/SiteFooter";
 import HomepageMarketingSections from "../components/HomepageMarketingSections";
 import VideoInput from "../components/VideoInput";
@@ -117,8 +117,8 @@ export default function HomePage() {
 
 await loadHistory(json.videoId);
 
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      toast.error(error.message || "Failed to load comments.");
     } finally {
       setLoading(false);
     }
@@ -268,7 +268,6 @@ await loadHistory(json.videoId);
 />
           <HistorySection history={history} />
           <CommentPreview comments={videoData?.comments || []} />
-          <HistorySection history={history} />
         </>
       )}
       <HomepageMarketingSections />

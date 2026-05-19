@@ -1,3 +1,14 @@
+import type { YouTubeComment } from "@/types/comment";
+
+type FilterOptions = {
+  comments: YouTubeComment[];
+  keyword: string;
+  removeDuplicates: boolean;
+  emoji: string;
+  timeWindowMinutes: number | null;
+  videoPublishedAt: string;
+};
+
 export function filterComments({
   comments,
   keyword,
@@ -5,7 +16,7 @@ export function filterComments({
   emoji,
   timeWindowMinutes,
   videoPublishedAt,
-}: any) {
+}: FilterOptions): YouTubeComment[] {
   let filtered = [...comments];
 
   if (keyword?.trim()) {
@@ -47,7 +58,11 @@ export function filterComments({
   return filtered;
 }
 
-export function pickRandomWinners(comments: any[], count: number) {
-  const shuffled = [...comments].sort(() => Math.random() - 0.5);
+export function pickRandomWinners(comments: YouTubeComment[], count: number): YouTubeComment[] {
+  const shuffled = [...comments];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
   return shuffled.slice(0, count);
 }
