@@ -14,10 +14,7 @@ export default function ContactPage() {
             For support, feedback, verification review, or business inquiries,
             contact us at:
           </p>
-
-          <p className="mt-6 text-2xl font-black text-lime-400">
-            support@ytgiveawaypicker.com
-          </p>
+          
           <p className="text-green-400 font-semibold text-lg break-all overflow-wrap-anywhere">
             support@ytgiveawaypicker.com
             </p>
