@@ -17,15 +17,10 @@ export default function ContactPage() {
 
           <p className="mt-6 text-2xl font-black text-lime-400">
             support@ytgiveawaypicker.com
-          </p>// BEFORE (broken on mobile)
-           <p className="text-green-400 font-semibold text-lg">
-             support@ytgiveawaypicker.com
-               </p>
-
-               // AFTER (fixed)
-               <p className="text-green-400 font-semibold text-lg break-all overflow-wrap-anywhere">
-                support@ytgiveawaypicker.com
-                 </p>
+          </p>
+          <p className="text-green-400 font-semibold text-lg break-all overflow-wrap-anywhere">
+            support@ytgiveawaypicker.com
+            </p>
 
           <p className="mt-6 text-zinc-500">
             Replace this email with your real support email before launch.
