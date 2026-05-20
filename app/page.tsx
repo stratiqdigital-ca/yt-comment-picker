@@ -3,9 +3,6 @@
 import { useMemo, useState } from "react";
 
 import Hero from "../components/Hero";
-import SiteHeader from "../components/SiteHeader";
-import SiteFooter from "../components/SiteFooter";
-import HomepageMarketingSections from "../components/HomepageMarketingSections";
 import VideoInfo from "../components/VideoInfo";
 import WinnerSettings from "../components/WinnerSettings";
 import WinnerReveal from "../components/WinnerReveal";
@@ -133,8 +130,6 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-[#0B0F19] text-white">
 
-      <SiteHeader />
-
       {/* ── Hero with integrated URL input & ad slot ── */}
       <div id="tool" />
       <Hero
@@ -193,9 +188,6 @@ export default function HomePage() {
       )}
 
       {/* ── Marketing sections + sticky ads ── */}
-      <HomepageMarketingSections />
-
-      <SiteFooter />
     </main>
   );
 }
