@@ -268,7 +268,6 @@ await loadHistory(json.videoId);
 />
           <HistorySection history={history} />
           <CommentPreview comments={videoData?.comments || []} />
-          <HistorySection history={history} />
         </>
       )}
       <HomepageMarketingSections />
