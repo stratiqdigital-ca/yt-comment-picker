@@ -4,7 +4,6 @@ import "./globals.css";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import { Toaster } from "react-hot-toast";
-import HomepageMarketingSections from "@/components/HomepageMarketingSections";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://ytgiveawaypicker.com"),
@@ -68,7 +67,6 @@ export default function RootLayout({
         <SiteHeader />
         <Toaster position="top-center" />
         {children}
-        <HomepageMarketingSections />
         <SiteFooter />
       </body>
     </html>

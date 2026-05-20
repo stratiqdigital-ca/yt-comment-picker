@@ -10,6 +10,7 @@ import WinnerCards from "../components/WinnerCards";
 import CommentPreview from "../components/CommentPreview";
 import HistorySection from "../components/HistorySection";
 import LoadingScreen from "../components/LoadingScreen";
+import HomepageMarketingSections from "@/components/HomepageMarketingSections";
 
 import {
   filterComments,
@@ -188,6 +189,7 @@ export default function HomePage() {
       )}
 
       {/* ── Marketing sections + sticky ads ── */}
+      <HomepageMarketingSections />
     </main>
   );
 }

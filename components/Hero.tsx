@@ -300,7 +300,7 @@ function RotatingText() {
     return () => clearInterval(timer)
   }, [])
   return (
-    <span style={{ display: 'inline-block', position: 'relative', minWidth: 320 }}>
+    <span className="rotating-word" style={{ display: 'inline-block', position: 'relative' }}>
       <AnimatePresence mode="wait">
         <motion.span
           key={index}
@@ -468,7 +468,7 @@ export default function Hero({ videoUrl, setVideoUrl, loading, onLoad }: HeroPro
             transition={{ duration: 0.7, delay: 0.5 }}
             style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 36 }}
           >
-            <div style={{ display: 'flex', gap: 10 }}>
+            <div className="hero-input-row" style={{ display: 'flex', gap: 10 }}>
               <input
                 type="url"
                 inputMode="url"
@@ -559,7 +559,8 @@ export default function Hero({ videoUrl, setVideoUrl, loading, onLoad }: HeroPro
           initial={{ opacity: 0, x: 40 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 460 }}
+          className="hero-visual-wrap"
+style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 460 }}
         >
           {/* Floating comment badges around the card */}
           <FloatBadge
@@ -588,6 +589,7 @@ export default function Hero({ videoUrl, setVideoUrl, loading, onLoad }: HeroPro
 
           {/* Floating YouTube badge — top center */}
           <motion.div
+  className="floating-badge"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 1, duration: 0.6 }}
@@ -664,9 +666,48 @@ export default function Hero({ videoUrl, setVideoUrl, loading, onLoad }: HeroPro
           0%, 100% { opacity: 1; transform: scale(1); }
           50% { opacity: 0.5; transform: scale(1.3); }
         }
-        @media (max-width: 768px) {
-          .hero-grid {
-            grid-template-columns: 1fr !important;
+        .rotating-word {
+  min-width: 320px;
+}
+
+@media (max-width: 1024px) {
+  .hero-grid {
+    grid-template-columns: 1fr !important;
+    gap: 36px !important;
+    padding: 64px 20px 44px !important;
+  }
+
+  .hero-visual-wrap {
+    min-height: 420px !important;
+    overflow: hidden !important;
+  }
+
+  .floating-badge {
+    display: none !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero-grid {
+    padding: 48px 16px 32px !important;
+  }
+
+  .hero-input-row {
+    flex-direction: column !important;
+  }
+
+  .hero-input-row button {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  .rotating-word {
+    min-width: 0 !important;
+    max-width: 100% !important;
+  }
+
+  .hero-visual-wrap {
+    min-height: 360px !important;
           }
         }
       `}</style>
