@@ -3,6 +3,51 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
+// ─── Infinite Ticker ─────────────────────────────────────────────────────────
+const STEPS = [
+  ' Paste YouTube URL',
+  ' Load All Comments',
+  ' Set Keyword Filter',
+  ' Set Emoji Filter',
+  ' Set Time Window',
+  ' Pick Random Winners',
+  ' Generate Verification Page',
+  ' Download Winner Cards',
+  ' Share Proof Publicly',
+]
+
+function Ticker() {
+  const doubled = [...STEPS, ...STEPS, ...STEPS]
+  return (
+    <div
+      className="w-full overflow-hidden py-4"
+      style={{
+        background: '#0a0d12',
+        borderTop: '1px solid rgba(255,255,255,0.06)',
+        borderBottom: '1px solid rgba(255,255,255,0.06)',
+      }}
+    >
+      <motion.div
+        className="flex whitespace-nowrap"
+        style={{ gap: 48 }}
+        animate={{ x: ['0%', '-33.333%'] }}
+        transition={{ duration: 35, repeat: Infinity, ease: 'linear' }}
+      >
+        {doubled.map((item, i) => (
+          <span
+            key={i}
+            className="shrink-0 flex items-center"
+            style={{ gap: 24, fontSize: 13, color: 'rgba(255,255,255,0.35)', fontWeight: 500 }}
+          >
+            {item}
+            <span style={{ color: '#a3e635', fontSize: 7 }}>◆</span>
+          </span>
+        ))}
+      </motion.div>
+    </div>
+  )
+}
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 type HeroProps = {
   videoUrl: string
@@ -309,6 +354,9 @@ export default function Hero({ videoUrl, setVideoUrl, loading, onLoad }: HeroPro
 
   return (
     <section style={{ position: 'relative', background: '#0B0F19', overflow: 'hidden', paddingBottom: 0 }}>
+
+      {/* ── TICKER (full width, outside ad columns) ──────────────────────── */}
+      <Ticker />
 
       {/* ── Background effects ─────────────────────────────────────── */}
       {/* Dot grid */}

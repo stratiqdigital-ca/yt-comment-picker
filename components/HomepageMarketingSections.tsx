@@ -139,51 +139,6 @@ function Label({ text }: { text: string }) {
   )
 }
 
-// ─── Infinite Ticker ─────────────────────────────────────────────────────────
-const STEPS = [
-  ' Paste YouTube URL',
-  ' Load All Comments',
-  ' Set Keyword Filter',
-  ' Set Emoji Filter',
-  ' Set Time Window',
-  ' Pick Random Winners',
-  ' Generate Verification Page',
-  ' Download Winner Cards',
-  ' Share Proof Publicly',
-]
-
-function Ticker() {
-  const doubled = [...STEPS, ...STEPS, ...STEPS]
-  return (
-    <div
-      className="w-full overflow-hidden py-4"
-      style={{
-        background: '#0a0d12',
-        borderTop: '1px solid rgba(255,255,255,0.06)',
-        borderBottom: '1px solid rgba(255,255,255,0.06)',
-      }}
-    >
-      <motion.div
-        className="flex whitespace-nowrap"
-        style={{ gap: 48 }}
-        animate={{ x: ['0%', '-33.333%'] }}
-        transition={{ duration: 35, repeat: Infinity, ease: 'linear' }}
-      >
-        {doubled.map((item, i) => (
-          <span
-            key={i}
-            className="shrink-0 flex items-center"
-            style={{ gap: 24, fontSize: 13, color: 'rgba(255,255,255,0.35)', fontWeight: 500 }}
-          >
-            {item}
-            <span style={{ color: '#a3e635', fontSize: 7 }}>◆</span>
-          </span>
-        ))}
-      </motion.div>
-    </div>
-  )
-}
-
 // ─── Animated Counter ─────────────────────────────────────────────────────────
 function Counter({ target, suffix, label }: { target: number; suffix: string; label: string }) {
   const ref = useRef<HTMLDivElement>(null)
@@ -495,9 +450,6 @@ function Divider() {
 export default function HomepageMarketingSections() {
   return (
     <div style={{ background: '#0B0F19', color: '#fff', overflowX: 'hidden' }}>
-
-      {/* ── TICKER (full width, outside ad columns) ──────────────────────── */}
-      <Ticker />
 
       {/* ── OUTER WRAPPER: sticky side ads + all content ─────────────────── */}
       <div className="flex items-start w-full max-w-[1400px] mx-auto">
