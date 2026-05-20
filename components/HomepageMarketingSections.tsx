@@ -623,7 +623,7 @@ export default function HomepageMarketingSections() {
           <Divider />
 
           {/* SECTION 3: Features Grid */}
-          <section style={{ padding: '100px 0' }}>
+          <section id="features" style={{ padding: '100px 0' }}>
             <PageRow>
               <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} style={{ textAlign: 'center', marginBottom: 64 }}>
                 <Label text="Features" />
@@ -666,7 +666,7 @@ export default function HomepageMarketingSections() {
           <Divider />
 
           {/* SECTION 4: Stats */}
-          <section style={{ padding: '90px 0', background: '#0a0d12' }}>
+          <section id="stats" style={{ padding: '90px 0', background: '#0a0d12' }}>
             <PageRow>
               <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} style={{ textAlign: 'center', marginBottom: 60 }}>
                 <Label text="By the Numbers" />
@@ -697,7 +697,7 @@ export default function HomepageMarketingSections() {
           <Divider />
 
           {/* SECTION 5: How It Works */}
-          <section style={{ padding: '100px 0' }}>
+          <section id="how-it-works" style={{ padding: '100px 0' }}>
             <PageRow>
               <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} style={{ textAlign: 'center', marginBottom: 72 }}>
                 <Label text="How It Works" />
@@ -750,7 +750,7 @@ export default function HomepageMarketingSections() {
           <Divider />
 
           {/* SECTION 6: Verification */}
-          <section style={{ padding: '100px 0', background: '#0a0d12' }}>
+          <section id="verification" style={{ padding: '100px 0', background: '#0a0d12' }}>
             <PageRow>
               <div className="grid md:grid-cols-2 gap-16 items-center">
                 <motion.div variants={fromLeft} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-60px' }}>
@@ -800,7 +800,7 @@ export default function HomepageMarketingSections() {
           <Divider />
 
           {/* SECTION 7: FAQ */}
-          <section style={{ padding: '100px 0' }}>
+          <section id="faq" style={{ padding: '100px 0' }}>
             <PageRow>
               <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} style={{ textAlign: 'center', marginBottom: 60 }}>
                 <Label text="FAQ" />
@@ -819,7 +819,7 @@ export default function HomepageMarketingSections() {
           <Divider />
 
           {/* SECTION 8: Final CTA */}
-          <section style={{ padding: '120px 0', background: '#0a0d12', position: 'relative', overflow: 'hidden' }}>
+          <section id="cta" style={{ padding: '120px 0', background: '#0a0d12', position: 'relative', overflow: 'hidden' }}>
             <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 600, height: 200, background: 'rgba(163,230,53,0.05)', filter: 'blur(80px)', borderRadius: '50%', pointerEvents: 'none' }} />
 
             <PageRow>
