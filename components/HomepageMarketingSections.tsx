@@ -102,15 +102,15 @@ function Label({ text }: { text: string }) {
 
 // ─── Infinite Ticker ─────────────────────────────────────────────────────────
 const STEPS = [
-  '(01) Paste YouTube URL',
-  '(02) Load All Comments',
-  '(03) Set Keyword Filter',
-  '(04) Set Emoji Filter',
-  '(05) Set Time Window',
-  '(06) Pick Random Winners',
-  '(07) Generate Verification Page',
-  '(08) Download Winner Cards',
-  '(09) Share Proof Publicly',
+  ' Paste YouTube URL',
+  ' Load All Comments',
+  ' Set Keyword Filter',
+  ' Set Emoji Filter',
+  ' Set Time Window',
+  ' Pick Random Winners',
+  ' Generate Verification Page',
+  ' Download Winner Cards',
+  ' Share Proof Publicly',
 ]
 
 function Ticker() {
