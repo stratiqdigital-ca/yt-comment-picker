@@ -133,6 +133,17 @@ export default function HomePage() {
   return (
     <main className="min-h-screen bg-[#0B0F19] text-white">
 
+      <SiteHeader />
+
+      {/* ── Hero with integrated URL input & ad slot ── */}
+      <div id="tool" />
+      <Hero
+        videoUrl={videoUrl}
+        setVideoUrl={setVideoUrl}
+        loading={loading}
+        onLoad={handleLoadComments}
+      />
+
       {/* ── Tool results (only shown after comments load) ── */}
       {loading && <LoadingScreen />}
 
@@ -183,6 +194,8 @@ export default function HomePage() {
 
       {/* ── Marketing sections + sticky ads ── */}
       <HomepageMarketingSections />
+
+      <SiteFooter />
     </main>
   );
 }
