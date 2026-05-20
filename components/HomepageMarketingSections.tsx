@@ -27,46 +27,85 @@ const scaleIn = {
   visible: { opacity: 1, scale: 1, transition: { duration: 0.8, ease: EASE } },
 }
 
-// ─── Ad Slot ─────────────────────────────────────────────────────────────────
+// ─── Sticky Side Ad Slot ──────────────────────────────────────────────────────
+// Rendered ONCE — wraps entire page content. Hidden below xl (1280px).
 function AdSlot({ side }: { side: 'left' | 'right' }) {
   return (
-    <div className="hidden xl:flex flex-col items-center w-[140px] shrink-0 pt-8">
+    <div className="hidden xl:flex flex-col items-center w-[160px] shrink-0 pt-10">
       <div
-        className="sticky top-24 w-[140px] h-[580px] flex flex-col items-center justify-center gap-3 rounded-xl"
+        className="sticky top-24 w-[160px] h-[600px] flex flex-col items-center justify-center gap-3 rounded-xl"
         style={{
-          background: 'rgba(255,255,255,0.02)',
-          border: '1px dashed rgba(255,255,255,0.07)',
+          background: 'rgba(163,230,53,0.02)',
+          border: '1px dashed rgba(163,230,53,0.1)',
         }}
       >
         <div
-          className="w-6 h-6 rounded-full flex items-center justify-center"
-          style={{ background: 'rgba(255,255,255,0.05)' }}
+          className="w-7 h-7 rounded-full flex items-center justify-center"
+          style={{ background: 'rgba(163,230,53,0.06)' }}
         >
-          <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.2)' }}>$</span>
+          <span style={{ fontSize: 11, color: 'rgba(163,230,53,0.3)' }}>$</span>
         </div>
         <span
           style={{
             fontSize: 9,
             letterSpacing: '0.15em',
             textTransform: 'uppercase',
-            color: 'rgba(255,255,255,0.12)',
+            color: 'rgba(163,230,53,0.15)',
             writingMode: 'vertical-rl',
           }}
         >
-          Advertisement · 140×580
+          Advertisement · 160×600
         </span>
       </div>
     </div>
   )
 }
 
-// ─── Page Wrapper (content + side ads) ───────────────────────────────────────
+// ─── In-Content Ad Banner ─────────────────────────────────────────────────────
+// Placed between sections — shows after every 2 content sections.
+function InContentAd() {
+  return (
+    <div
+      style={{
+        width: '100%',
+        padding: '12px 0',
+      }}
+    >
+      <div
+        style={{
+          width: '100%',
+          maxWidth: 728,
+          margin: '0 auto',
+          height: 90,
+          borderRadius: 12,
+          background: 'rgba(163,230,53,0.02)',
+          border: '1px dashed rgba(163,230,53,0.08)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 10,
+        }}
+      >
+        <span
+          style={{
+            fontSize: 9,
+            letterSpacing: '0.18em',
+            textTransform: 'uppercase',
+            color: 'rgba(163,230,53,0.15)',
+          }}
+        >
+          Advertisement · 728×90
+        </span>
+      </div>
+    </div>
+  )
+}
+
+// ─── Page Content Row (NO side ads — ads are in outer wrapper) ───────────────
 function PageRow({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex items-start gap-4 w-full max-w-[1240px] mx-auto px-4 md:px-8">
-      <AdSlot side="left" />
-      <div className="flex-1 min-w-0">{children}</div>
-      <AdSlot side="right" />
+    <div className="w-full max-w-[960px] mx-auto px-4 md:px-8">
+      {children}
     </div>
   )
 }
@@ -79,7 +118,7 @@ function Label({ text }: { text: string }) {
         style={{
           width: 24,
           height: 2,
-          background: '#FF0000',
+          background: '#a3e635',
           display: 'inline-block',
           borderRadius: 2,
           flexShrink: 0,
@@ -137,7 +176,7 @@ function Ticker() {
             style={{ gap: 24, fontSize: 13, color: 'rgba(255,255,255,0.35)', fontWeight: 500 }}
           >
             {item}
-            <span style={{ color: '#FF0000', fontSize: 7 }}>◆</span>
+            <span style={{ color: '#a3e635', fontSize: 7 }}>◆</span>
           </span>
         ))}
       </motion.div>
@@ -179,7 +218,7 @@ function Counter({ target, suffix, label }: { target: number; suffix: string; la
     >
       <div style={{ fontSize: 56, fontWeight: 900, color: '#fff', lineHeight: 1, letterSpacing: '-2px' }}>
         {count.toLocaleString()}
-        <span style={{ color: '#FF0000' }}>{suffix}</span>
+        <span style={{ color: '#a3e635' }}>{suffix}</span>
       </div>
       <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)', marginTop: 12, letterSpacing: '0.15em', textTransform: 'uppercase', fontWeight: 600 }}>
         {label}
@@ -196,7 +235,6 @@ function VideoMockup() {
       transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
       style={{ position: 'relative', display: 'inline-block' }}
     >
-      {/* phone frame */}
       <div
         style={{
           width: 260,
@@ -209,16 +247,14 @@ function VideoMockup() {
           boxShadow: '0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04)',
         }}
       >
-        {/* notch */}
         <div style={{ background: '#0d1117', height: 28, display: 'flex', alignItems: 'center', justifyContent: 'center', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
           <div style={{ width: 60, height: 5, borderRadius: 3, background: 'rgba(255,255,255,0.08)' }} />
         </div>
 
         <div style={{ padding: '12px 10px', display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {/* video card */}
-          <div style={{ background: 'linear-gradient(135deg, rgba(255,0,0,0.15), rgba(255,0,0,0.05))', border: '1px solid rgba(255,0,0,0.2)', borderRadius: 14, padding: 12, display: 'flex', gap: 10, alignItems: 'center' }}>
-            <div style={{ width: 40, height: 40, borderRadius: 10, background: 'rgba(255,0,0,0.2)', border: '1px solid rgba(255,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
-              <span style={{ color: '#FF0000', fontSize: 16, marginLeft: 3 }}>▶</span>
+          <div style={{ background: 'linear-gradient(135deg, rgba(163,230,53,0.12), rgba(163,230,53,0.04))', border: '1px solid rgba(163,230,53,0.18)', borderRadius: 14, padding: 12, display: 'flex', gap: 10, alignItems: 'center' }}>
+            <div style={{ width: 40, height: 40, borderRadius: 10, background: 'rgba(163,230,53,0.15)', border: '1px solid rgba(163,230,53,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <span style={{ color: '#a3e635', fontSize: 16, marginLeft: 3 }}>▶</span>
             </div>
             <div style={{ flex: 1 }}>
               <div style={{ height: 7, background: 'rgba(255,255,255,0.15)', borderRadius: 4, marginBottom: 5, width: '80%' }} />
@@ -226,37 +262,33 @@ function VideoMockup() {
             </div>
           </div>
 
-          {/* divider label */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '4px 2px' }}>
             <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.05)' }} />
             <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.2)', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Comments</span>
             <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.05)' }} />
           </div>
 
-          {/* comment rows */}
           {[90, 70, 80, 60, 75].map((w, i) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, background: i === 2 ? 'rgba(255,0,0,0.06)' : 'rgba(255,255,255,0.02)', border: `1px solid ${i === 2 ? 'rgba(255,0,0,0.15)' : 'rgba(255,255,255,0.04)'}`, borderRadius: 12, padding: '8px 10px' }}>
-              <div style={{ width: 24, height: 24, borderRadius: '50%', background: i === 2 ? 'rgba(255,0,0,0.2)' : 'rgba(255,255,255,0.07)', flexShrink: 0 }} />
+            <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, background: i === 2 ? 'rgba(163,230,53,0.05)' : 'rgba(255,255,255,0.02)', border: `1px solid ${i === 2 ? 'rgba(163,230,53,0.15)' : 'rgba(255,255,255,0.04)'}`, borderRadius: 12, padding: '8px 10px' }}>
+              <div style={{ width: 24, height: 24, borderRadius: '50%', background: i === 2 ? 'rgba(163,230,53,0.2)' : 'rgba(255,255,255,0.07)', flexShrink: 0 }} />
               <div style={{ flex: 1 }}>
-                <div style={{ height: 6, background: i === 2 ? 'rgba(255,0,0,0.3)' : 'rgba(255,255,255,0.1)', borderRadius: 3, marginBottom: 5, width: '45%' }} />
+                <div style={{ height: 6, background: i === 2 ? 'rgba(163,230,53,0.3)' : 'rgba(255,255,255,0.1)', borderRadius: 3, marginBottom: 5, width: '45%' }} />
                 <div style={{ height: 5, background: 'rgba(255,255,255,0.05)', borderRadius: 3, width: `${w}%` }} />
               </div>
               {i === 2 && (
-                <span style={{ fontSize: 9, color: '#FF0000', fontWeight: 700, flexShrink: 0, marginTop: 2 }}>🏆</span>
+                <span style={{ fontSize: 9, color: '#a3e635', fontWeight: 700, flexShrink: 0, marginTop: 2 }}>🏆</span>
               )}
             </div>
           ))}
 
-          {/* winner badge */}
-          <div style={{ background: 'rgba(255,0,0,0.1)', border: '1px solid rgba(255,0,0,0.25)', borderRadius: 14, padding: '10px 14px', textAlign: 'center', marginTop: 4 }}>
-            <div style={{ fontSize: 11, color: '#FF0000', fontWeight: 700, letterSpacing: '0.05em' }}>🏆 Winner Selected!</div>
+          <div style={{ background: 'rgba(163,230,53,0.08)', border: '1px solid rgba(163,230,53,0.2)', borderRadius: 14, padding: '10px 14px', textAlign: 'center', marginTop: 4 }}>
+            <div style={{ fontSize: 11, color: '#a3e635', fontWeight: 700, letterSpacing: '0.05em' }}>🏆 Winner Selected!</div>
             <div style={{ fontSize: 13, color: '#fff', fontWeight: 800, marginTop: 4 }}>@channel_winner</div>
           </div>
         </div>
       </div>
 
-      {/* glow under phone */}
-      <div style={{ position: 'absolute', bottom: -20, left: '50%', transform: 'translateX(-50%)', width: 160, height: 24, background: 'rgba(255,0,0,0.18)', filter: 'blur(24px)', borderRadius: '50%' }} />
+      <div style={{ position: 'absolute', bottom: -20, left: '50%', transform: 'translateX(-50%)', width: 160, height: 24, background: 'rgba(163,230,53,0.15)', filter: 'blur(24px)', borderRadius: '50%' }} />
     </motion.div>
   )
 }
@@ -280,28 +312,23 @@ function ShortsMockup() {
           boxShadow: '0 40px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04)',
         }}
       >
-        {/* notch */}
         <div style={{ background: '#0d1117', height: 24, display: 'flex', alignItems: 'center', justifyContent: 'center', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
           <div style={{ width: 48, height: 4, borderRadius: 2, background: 'rgba(255,255,255,0.08)' }} />
         </div>
 
-        {/* shorts content area */}
-        <div style={{ position: 'relative', height: 'calc(100% - 24px)', background: 'linear-gradient(180deg, #1a0404 0%, #0a0d12 100%)' }}>
-          {/* shorts label */}
+        <div style={{ position: 'relative', height: 'calc(100% - 24px)', background: 'linear-gradient(180deg, #0d1a04 0%, #0a0d12 100%)' }}>
           <div style={{ position: 'absolute', top: 10, left: 0, right: 0, display: 'flex', alignItems: 'center', gap: 6, padding: '0 12px' }}>
             <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.12)' }} />
             <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.4)', fontWeight: 700, letterSpacing: '0.15em' }}>SHORTS</span>
             <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.12)' }} />
           </div>
 
-          {/* play button */}
           <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -60%)', textAlign: 'center' }}>
-            <div style={{ width: 52, height: 52, borderRadius: '50%', border: '2px solid rgba(255,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto', background: 'rgba(255,0,0,0.1)' }}>
-              <span style={{ color: '#FF0000', fontSize: 18, marginLeft: 4 }}>▶</span>
+            <div style={{ width: 52, height: 52, borderRadius: '50%', border: '2px solid rgba(163,230,53,0.45)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto', background: 'rgba(163,230,53,0.08)' }}>
+              <span style={{ color: '#a3e635', fontSize: 18, marginLeft: 4 }}>▶</span>
             </div>
           </div>
 
-          {/* floating comments */}
           <div style={{ position: 'absolute', bottom: 60, left: 8, right: 8, display: 'flex', flexDirection: 'column', gap: 6 }}>
             {[75, 85, 65].map((w, i) => (
               <div key={i} style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(8px)', borderRadius: 10, padding: '7px 10px', display: 'flex', alignItems: 'center', gap: 7 }}>
@@ -311,14 +338,13 @@ function ShortsMockup() {
             ))}
           </div>
 
-          {/* winner strip */}
-          <div style={{ position: 'absolute', bottom: 10, left: 8, right: 8, background: 'rgba(255,0,0,0.12)', border: '1px solid rgba(255,0,0,0.28)', borderRadius: 12, padding: '8px 10px', textAlign: 'center' }}>
-            <div style={{ fontSize: 10, color: '#FF0000', fontWeight: 700 }}>Winner Picked ✓</div>
+          <div style={{ position: 'absolute', bottom: 10, left: 8, right: 8, background: 'rgba(163,230,53,0.08)', border: '1px solid rgba(163,230,53,0.22)', borderRadius: 12, padding: '8px 10px', textAlign: 'center' }}>
+            <div style={{ fontSize: 10, color: '#a3e635', fontWeight: 700 }}>Winner Picked ✓</div>
             <div style={{ fontSize: 12, color: '#fff', fontWeight: 800, marginTop: 2 }}>@shorts_winner</div>
           </div>
         </div>
       </div>
-      <div style={{ position: 'absolute', bottom: -16, left: '50%', transform: 'translateX(-50%)', width: 120, height: 18, background: 'rgba(255,0,0,0.15)', filter: 'blur(18px)', borderRadius: '50%' }} />
+      <div style={{ position: 'absolute', bottom: -16, left: '50%', transform: 'translateX(-50%)', width: 120, height: 18, background: 'rgba(163,230,53,0.12)', filter: 'blur(18px)', borderRadius: '50%' }} />
     </motion.div>
   )
 }
@@ -335,7 +361,6 @@ function VerifyMockup() {
         boxShadow: '0 24px 60px rgba(0,0,0,0.5)',
       }}
     >
-      {/* browser chrome */}
       <div style={{ background: '#0d1117', padding: '10px 14px', display: 'flex', alignItems: 'center', gap: 8, borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
         <div style={{ display: 'flex', gap: 5 }}>
           {['#FF5F57', '#FEBC2E', '#28C840'].map((c, i) => (
@@ -344,20 +369,17 @@ function VerifyMockup() {
         </div>
         <div style={{ flex: 1, background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 7, height: 24, display: 'flex', alignItems: 'center', padding: '0 10px', margin: '0 6px' }}>
           <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.25)' }}>
-            ytgiveawaypicker.com/verify/<span style={{ color: '#FF0000' }}>gv_abc123</span>
+            ytgiveawaypicker.com/verify/<span style={{ color: '#a3e635' }}>gv_abc123</span>
           </span>
         </div>
       </div>
 
-      {/* content */}
       <div style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 12 }}>
-        {/* verified header */}
-        <div style={{ background: 'rgba(255,0,0,0.06)', border: '1px solid rgba(255,0,0,0.14)', borderRadius: 14, padding: '12px 16px', textAlign: 'center' }}>
+        <div style={{ background: 'rgba(163,230,53,0.05)', border: '1px solid rgba(163,230,53,0.12)', borderRadius: 14, padding: '12px 16px', textAlign: 'center' }}>
           <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 4 }}>Verified Giveaway</div>
           <div style={{ fontSize: 15, color: '#fff', fontWeight: 800 }}>My YouTube Channel Giveaway</div>
         </div>
 
-        {/* stats row */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8 }}>
           {[['1,240', 'Valid Entries'], ['3', 'Winners'], ['keyword', 'Filter Used']].map(([val, lbl], i) => (
             <div key={i} style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 12, padding: '10px 8px', textAlign: 'center' }}>
@@ -367,16 +389,15 @@ function VerifyMockup() {
           ))}
         </div>
 
-        {/* winners list */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
           {[['@winner_one', 'Comment: "giveaway 🎉"'], ['@winner_two', 'Comment: "giveaway love this"'], ['@winner_three', 'Comment: "giveaway 🔥🔥"']].map(([handle, comment], i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, background: 'rgba(255,255,255,0.025)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 12, padding: '10px 12px' }}>
-              <div style={{ width: 30, height: 30, borderRadius: '50%', background: 'rgba(255,0,0,0.15)', border: '1px solid rgba(255,0,0,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, flexShrink: 0 }}>🏆</div>
+              <div style={{ width: 30, height: 30, borderRadius: '50%', background: 'rgba(163,230,53,0.12)', border: '1px solid rgba(163,230,53,0.18)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, flexShrink: 0 }}>🏆</div>
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ fontSize: 13, color: '#fff', fontWeight: 700 }}>{handle}</div>
                 <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.25)', marginTop: 2, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{comment}</div>
               </div>
-              <span style={{ fontSize: 11, color: '#FF0000', fontWeight: 700, flexShrink: 0 }}>#{i + 1}</span>
+              <span style={{ fontSize: 11, color: '#a3e635', fontWeight: 700, flexShrink: 0 }}>#{i + 1}</span>
             </div>
           ))}
         </div>
@@ -416,7 +437,7 @@ function FAQItem({ q, a, i }: { q: string; a: string; i: number }) {
       whileInView="visible"
       viewport={{ once: true }}
       style={{
-        border: `1px solid ${open ? 'rgba(255,0,0,0.2)' : 'rgba(255,255,255,0.07)'}`,
+        border: `1px solid ${open ? 'rgba(163,230,53,0.2)' : 'rgba(255,255,255,0.07)'}`,
         borderRadius: 16,
         overflow: 'hidden',
         transition: 'border-color 0.3s',
@@ -441,7 +462,7 @@ function FAQItem({ q, a, i }: { q: string; a: string; i: number }) {
         <motion.span
           animate={{ rotate: open ? 45 : 0 }}
           transition={{ duration: 0.25 }}
-          style={{ fontSize: 24, color: '#FF0000', lineHeight: 1, flexShrink: 0, fontWeight: 300 }}
+          style={{ fontSize: 24, color: '#a3e635', lineHeight: 1, flexShrink: 0, fontWeight: 300 }}
         >
           +
         </motion.span>
@@ -475,33 +496,195 @@ export default function HomepageMarketingSections() {
   return (
     <div style={{ background: '#0B0F19', color: '#fff', overflowX: 'hidden' }}>
 
-      {/* ── TICKER ─────────────────────────────────────────────────────────── */}
+      {/* ── TICKER (full width, outside ad columns) ──────────────────────── */}
       <Ticker />
 
-      {/* ── SECTION 1: YouTube Videos ──────────────────────────────────────── */}
-      <section style={{ padding: '100px 0' }}>
-        <PageRow>
-          <div className="grid md:grid-cols-2 gap-16 items-center">
-            {/* Text Left */}
-            <motion.div variants={fromLeft} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-60px' }}>
-              <Label text="YouTube Videos" />
-              <h2 style={{ fontSize: 'clamp(36px, 5vw, 56px)', fontWeight: 900, lineHeight: 1.08, letterSpacing: '-1.5px', marginBottom: 20 }}>
-                Pick winners from<br />
-                <span style={{ color: '#FF0000' }}>YouTube</span> video<br />
-                comments
-              </h2>
-              <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.45)', lineHeight: 1.75, marginBottom: 36, maxWidth: 420 }}>
-                Paste any standard YouTube video URL. We load all public comments,
-                apply your filters and randomly select verified winners in seconds.
-                No login required.
-              </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 40 }}>
-                {[
-                  'Supports all youtube.com/watch URLs',
-                  'Loads up to 10,000+ comments per video',
-                  'One entry per account — spam proof',
-                  'Every result publicly verifiable',
-                ].map((item, i) => (
+      {/* ── OUTER WRAPPER: sticky side ads + all content ─────────────────── */}
+      <div className="flex items-start w-full max-w-[1400px] mx-auto">
+
+        {/* LEFT STICKY AD — renders once, sticks as user scrolls */}
+        <AdSlot side="left" />
+
+        {/* ── ALL CONTENT SECTIONS ───────────────────────────────────────── */}
+        <div className="flex-1 min-w-0">
+
+          {/* SECTION 1: YouTube Videos */}
+          <section style={{ padding: '100px 0' }}>
+            <PageRow>
+              <div className="grid md:grid-cols-2 gap-16 items-center">
+                <motion.div variants={fromLeft} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-60px' }}>
+                  <Label text="YouTube Videos" />
+                  <h2 style={{ fontSize: 'clamp(36px, 5vw, 56px)', fontWeight: 900, lineHeight: 1.08, letterSpacing: '-1.5px', marginBottom: 20 }}>
+                    Pick winners from<br />
+                    <span style={{ color: '#a3e635' }}>YouTube</span> video<br />
+                    comments
+                  </h2>
+                  <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.45)', lineHeight: 1.75, marginBottom: 36, maxWidth: 420 }}>
+                    Paste any standard YouTube video URL. We load all public comments,
+                    apply your filters and randomly select verified winners in seconds.
+                    No login required.
+                  </p>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 40 }}>
+                    {[
+                      'Supports all youtube.com/watch URLs',
+                      'Loads up to 10,000+ comments per video',
+                      'One entry per account — spam proof',
+                      'Every result publicly verifiable',
+                    ].map((item, i) => (
+                      <motion.div
+                        key={i}
+                        custom={i}
+                        variants={fadeUp}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true }}
+                        style={{ display: 'flex', alignItems: 'center', gap: 12, fontSize: 14, color: 'rgba(255,255,255,0.65)' }}
+                      >
+                        <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#a3e635', flexShrink: 0 }} />
+                        {item}
+                      </motion.div>
+                    ))}
+                  </div>
+                  <motion.a
+                    href="/#tool"
+                    whileHover={{ scale: 1.04 }}
+                    whileTap={{ scale: 0.96 }}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 10,
+                      height: 50,
+                      padding: '0 28px',
+                      borderRadius: 14,
+                      background: '#a3e635',
+                      color: '#000',
+                      fontWeight: 800,
+                      fontSize: 14,
+                      textDecoration: 'none',
+                    }}
+                  >
+                    Try it with a video
+                    <span style={{ fontSize: 18 }}>→</span>
+                  </motion.a>
+                </motion.div>
+
+                <motion.div
+                  variants={fromRight}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: '-60px' }}
+                  style={{ display: 'flex', justifyContent: 'center' }}
+                >
+                  <VideoMockup />
+                </motion.div>
+              </div>
+            </PageRow>
+          </section>
+
+          <Divider />
+
+          {/* SECTION 2: YouTube Shorts */}
+          <section style={{ padding: '100px 0', background: '#0a0d12' }}>
+            <PageRow>
+              <div className="grid md:grid-cols-2 gap-16 items-center">
+                <motion.div
+                  variants={fromLeft}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: '-60px' }}
+                  style={{ display: 'flex', justifyContent: 'center' }}
+                  className="order-2 md:order-1"
+                >
+                  <ShortsMockup />
+                </motion.div>
+
+                <motion.div
+                  variants={fromRight}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: '-60px' }}
+                  className="order-1 md:order-2"
+                >
+                  <Label text="YouTube Shorts" />
+                  <h2 style={{ fontSize: 'clamp(36px, 5vw, 56px)', fontWeight: 900, lineHeight: 1.08, letterSpacing: '-1.5px', marginBottom: 20 }}>
+                    Built for<br />
+                    <span style={{ color: '#a3e635' }}>Shorts</span><br />
+                    giveaways too
+                  </h2>
+                  <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.45)', lineHeight: 1.75, marginBottom: 36, maxWidth: 420 }}>
+                    YouTube Shorts comments work differently under the hood — our tool
+                    handles both formats seamlessly with the exact same filters and
+                    verification system.
+                  </p>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 40 }}>
+                    {[
+                      'Supports youtube.com/shorts/ URLs',
+                      'Time window filter for first-comment fans',
+                      'Same filters, same verification system',
+                      'Vertical winner cards for Instagram Stories',
+                    ].map((item, i) => (
+                      <motion.div
+                        key={i}
+                        custom={i}
+                        variants={fadeUp}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true }}
+                        style={{ display: 'flex', alignItems: 'center', gap: 12, fontSize: 14, color: 'rgba(255,255,255,0.65)' }}
+                      >
+                        <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#a3e635', flexShrink: 0 }} />
+                        {item}
+                      </motion.div>
+                    ))}
+                  </div>
+                  <motion.a
+                    href="/#tool"
+                    whileHover={{ scale: 1.04 }}
+                    whileTap={{ scale: 0.96 }}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: 10,
+                      height: 50,
+                      padding: '0 28px',
+                      borderRadius: 14,
+                      background: '#a3e635',
+                      color: '#000',
+                      fontWeight: 800,
+                      fontSize: 14,
+                      textDecoration: 'none',
+                    }}
+                  >
+                    Try it with a Short
+                    <span style={{ fontSize: 18 }}>→</span>
+                  </motion.a>
+                </motion.div>
+              </div>
+            </PageRow>
+          </section>
+
+          {/* ── IN-CONTENT AD #1 — after sections 1 & 2 ──────────────────── */}
+          <div style={{ background: '#0a0d12', padding: '24px 32px' }}>
+            <InContentAd />
+          </div>
+
+          <Divider />
+
+          {/* SECTION 3: Features Grid */}
+          <section style={{ padding: '100px 0' }}>
+            <PageRow>
+              <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} style={{ textAlign: 'center', marginBottom: 64 }}>
+                <Label text="Features" />
+                <h2 style={{ fontSize: 'clamp(34px, 5vw, 52px)', fontWeight: 900, letterSpacing: '-1.5px', marginBottom: 16 }}>
+                  Everything you need
+                </h2>
+                <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.4)', maxWidth: 480, margin: '0 auto', lineHeight: 1.7 }}>
+                  Fair, fast and fully transparent — every filter creators need in one free tool.
+                </p>
+              </motion.div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {FEATURES.map((f, i) => (
                   <motion.div
                     key={i}
                     custom={i}
@@ -509,382 +692,237 @@ export default function HomepageMarketingSections() {
                     initial="hidden"
                     whileInView="visible"
                     viewport={{ once: true }}
-                    style={{ display: 'flex', alignItems: 'center', gap: 12, fontSize: 14, color: 'rgba(255,255,255,0.65)' }}
+                    whileHover={{ y: -8, borderColor: 'rgba(163,230,53,0.28)' }}
+                    style={{
+                      background: '#0a0d12',
+                      border: '1px solid rgba(255,255,255,0.07)',
+                      borderRadius: 20,
+                      padding: '28px 24px',
+                      cursor: 'default',
+                      transition: 'border-color 0.3s',
+                    }}
                   >
-                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#FF0000', flexShrink: 0 }} />
-                    {item}
+                    <div style={{ fontSize: 32, marginBottom: 16 }}>{f.icon}</div>
+                    <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', marginBottom: 10 }}>{f.title}</h3>
+                    <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.4)', lineHeight: 1.7 }}>{f.desc}</p>
                   </motion.div>
                 ))}
               </div>
-              <motion.a
-                href="/#tool"
-                whileHover={{ scale: 1.04, background: '#CC0000' }}
-                whileTap={{ scale: 0.96 }}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 10,
-                  height: 50,
-                  padding: '0 28px',
-                  borderRadius: 14,
-                  background: '#FF0000',
-                  color: '#fff',
-                  fontWeight: 800,
-                  fontSize: 14,
-                  textDecoration: 'none',
-                  transition: 'background 0.2s',
-                }}
-              >
-                Try it with a video
-                <span style={{ fontSize: 18 }}>→</span>
-              </motion.a>
-            </motion.div>
+            </PageRow>
+          </section>
 
-            {/* Phone Right */}
-            <motion.div
-              variants={fromRight}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: '-60px' }}
-              style={{ display: 'flex', justifyContent: 'center' }}
-            >
-              <VideoMockup />
-            </motion.div>
+          <Divider />
+
+          {/* SECTION 4: Stats */}
+          <section style={{ padding: '90px 0', background: '#0a0d12' }}>
+            <PageRow>
+              <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} style={{ textAlign: 'center', marginBottom: 60 }}>
+                <Label text="By the Numbers" />
+                <h2 style={{ fontSize: 'clamp(34px, 5vw, 52px)', fontWeight: 900, letterSpacing: '-1.5px' }}>
+                  Trusted by creators
+                </h2>
+              </motion.div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 20 }}>
+                  <Counter target={10000} suffix="+" label="Giveaways Picked" />
+                </div>
+                <div style={{ background: 'rgba(163,230,53,0.04)', border: '1px solid rgba(163,230,53,0.1)', borderRadius: 20 }}>
+                  <Counter target={500000} suffix="+" label="Comments Loaded" />
+                </div>
+                <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 20 }}>
+                  <Counter target={25000} suffix="+" label="Winners Selected" />
+                </div>
+              </div>
+            </PageRow>
+          </section>
+
+          {/* ── IN-CONTENT AD #2 — after sections 3 & 4 ──────────────────── */}
+          <div style={{ background: '#0a0d12', padding: '24px 32px' }}>
+            <InContentAd />
           </div>
-        </PageRow>
-      </section>
 
-      <Divider />
+          <Divider />
 
-      {/* ── SECTION 2: YouTube Shorts ──────────────────────────────────────── */}
-      <section style={{ padding: '100px 0', background: '#0a0d12' }}>
-        <PageRow>
-          <div className="grid md:grid-cols-2 gap-16 items-center">
-            {/* Phone Left */}
-            <motion.div
-              variants={fromLeft}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: '-60px' }}
-              style={{ display: 'flex', justifyContent: 'center' }}
-              className="order-2 md:order-1"
-            >
-              <ShortsMockup />
-            </motion.div>
+          {/* SECTION 5: How It Works */}
+          <section style={{ padding: '100px 0' }}>
+            <PageRow>
+              <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} style={{ textAlign: 'center', marginBottom: 72 }}>
+                <Label text="How It Works" />
+                <h2 style={{ fontSize: 'clamp(34px, 5vw, 52px)', fontWeight: 900, letterSpacing: '-1.5px', marginBottom: 14 }}>
+                  Three steps. Done.
+                </h2>
+                <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.4)', maxWidth: 400, margin: '0 auto' }}>
+                  From URL to verified winner in under 60 seconds.
+                </p>
+              </motion.div>
 
-            {/* Text Right */}
-            <motion.div
-              variants={fromRight}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, margin: '-60px' }}
-              className="order-1 md:order-2"
-            >
-              <Label text="YouTube Shorts" />
-              <h2 style={{ fontSize: 'clamp(36px, 5vw, 56px)', fontWeight: 900, lineHeight: 1.08, letterSpacing: '-1.5px', marginBottom: 20 }}>
-                Built for<br />
-                <span style={{ color: '#FF0000' }}>Shorts</span><br />
-                giveaways too
-              </h2>
-              <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.45)', lineHeight: 1.75, marginBottom: 36, maxWidth: 420 }}>
-                YouTube Shorts comments work differently under the hood — our tool
-                handles both formats seamlessly with the exact same filters and
-                verification system.
-              </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 40 }}>
-                {[
-                  'Supports youtube.com/shorts/ URLs',
-                  'Time window filter for first-comment fans',
-                  'Same filters, same verification system',
-                  'Vertical winner cards for Instagram Stories',
-                ].map((item, i) => (
+              <div style={{ position: 'relative' }}>
+                <div className="hidden md:block" style={{ position: 'absolute', top: 28, left: 'calc(16.66% + 28px)', right: 'calc(16.66% + 28px)', height: 1 }}>
                   <motion.div
-                    key={i}
-                    custom={i}
-                    variants={fadeUp}
-                    initial="hidden"
-                    whileInView="visible"
+                    initial={{ scaleX: 0 }}
+                    whileInView={{ scaleX: 1 }}
                     viewport={{ once: true }}
-                    style={{ display: 'flex', alignItems: 'center', gap: 12, fontSize: 14, color: 'rgba(255,255,255,0.65)' }}
-                  >
-                    <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#FF0000', flexShrink: 0 }} />
-                    {item}
-                  </motion.div>
+                    transition={{ duration: 1.2, delay: 0.3, ease: EASE }}
+                    style={{ height: '100%', background: 'linear-gradient(90deg, rgba(163,230,53,0.5), rgba(163,230,53,0.2), rgba(163,230,53,0.5))', transformOrigin: 'left' }}
+                  />
+                </div>
+
+                <div className="grid md:grid-cols-3 gap-8">
+                  {[
+                    { num: '01', title: 'Paste Your URL', desc: 'Drop any YouTube video or Shorts link into the input bar. We extract the video ID automatically.' },
+                    { num: '02', title: 'Set Your Filters', desc: 'Choose keywords, emojis, time window and how many winners to pick. Or run with no filters at all.' },
+                    { num: '03', title: 'Pick & Verify', desc: 'Randomly select winners and instantly generate a public proof page you can share with your audience.' },
+                  ].map((step, i) => (
+                    <motion.div
+                      key={i}
+                      custom={i}
+                      variants={fadeUp}
+                      initial="hidden"
+                      whileInView="visible"
+                      viewport={{ once: true }}
+                      style={{ textAlign: 'center', position: 'relative' }}
+                    >
+                      <div style={{ width: 56, height: 56, borderRadius: 18, background: 'rgba(163,230,53,0.08)', border: '1px solid rgba(163,230,53,0.22)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', position: 'relative', zIndex: 1 }}>
+                        <span style={{ color: '#a3e635', fontWeight: 900, fontSize: 18 }}>{step.num}</span>
+                      </div>
+                      <h3 style={{ fontSize: 18, fontWeight: 800, color: '#fff', marginBottom: 12 }}>{step.title}</h3>
+                      <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.4)', lineHeight: 1.75, maxWidth: 240, margin: '0 auto' }}>{step.desc}</p>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            </PageRow>
+          </section>
+
+          <Divider />
+
+          {/* SECTION 6: Verification */}
+          <section style={{ padding: '100px 0', background: '#0a0d12' }}>
+            <PageRow>
+              <div className="grid md:grid-cols-2 gap-16 items-center">
+                <motion.div variants={fromLeft} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-60px' }}>
+                  <Label text="Verification System" />
+                  <h2 style={{ fontSize: 'clamp(36px, 5vw, 54px)', fontWeight: 900, lineHeight: 1.08, letterSpacing: '-1.5px', marginBottom: 20 }}>
+                    100%{' '}
+                    <span style={{ color: '#a3e635' }}>Transparent</span>{' '}
+                    giveaways
+                  </h2>
+                  <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.45)', lineHeight: 1.75, marginBottom: 36, maxWidth: 420 }}>
+                    Every giveaway generates a permanent public verification page at a
+                    unique URL. Share it with your audience so they can confirm the
+                    winner was chosen fairly — no trust-me required.
+                  </p>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                    {[
+                      'Public verification URL generated instantly',
+                      'Shows every filter used in the draw',
+                      'Displays total valid entry count',
+                      'Downloadable winner cards as shareable proof',
+                    ].map((item, i) => (
+                      <motion.div
+                        key={i}
+                        custom={i}
+                        variants={fadeUp}
+                        initial="hidden"
+                        whileInView="visible"
+                        viewport={{ once: true }}
+                        style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}
+                      >
+                        <div style={{ width: 22, height: 22, borderRadius: '50%', background: 'rgba(163,230,53,0.08)', border: '1px solid rgba(163,230,53,0.22)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 2 }}>
+                          <span style={{ color: '#a3e635', fontSize: 10, fontWeight: 700 }}>✓</span>
+                        </div>
+                        <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)', lineHeight: 1.55 }}>{item}</span>
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+
+                <motion.div variants={fromRight} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-60px' }}>
+                  <VerifyMockup />
+                </motion.div>
+              </div>
+            </PageRow>
+          </section>
+
+          <Divider />
+
+          {/* SECTION 7: FAQ */}
+          <section style={{ padding: '100px 0' }}>
+            <PageRow>
+              <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} style={{ textAlign: 'center', marginBottom: 60 }}>
+                <Label text="FAQ" />
+                <h2 style={{ fontSize: 'clamp(34px, 5vw, 52px)', fontWeight: 900, letterSpacing: '-1.5px' }}>
+                  Common questions
+                </h2>
+              </motion.div>
+              <div style={{ maxWidth: 720, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {FAQS.map((faq, i) => (
+                  <FAQItem key={i} q={faq.q} a={faq.a} i={i} />
                 ))}
               </div>
-              <motion.a
-                href="/#tool"
-                whileHover={{ scale: 1.04, background: '#CC0000' }}
-                whileTap={{ scale: 0.96 }}
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: 10,
-                  height: 50,
-                  padding: '0 28px',
-                  borderRadius: 14,
-                  background: '#FF0000',
-                  color: '#fff',
-                  fontWeight: 800,
-                  fontSize: 14,
-                  textDecoration: 'none',
-                  transition: 'background 0.2s',
-                }}
-              >
-                Try it with a Short
-                <span style={{ fontSize: 18 }}>→</span>
-              </motion.a>
-            </motion.div>
-          </div>
-        </PageRow>
-      </section>
+            </PageRow>
+          </section>
 
-      <Divider />
+          <Divider />
 
-      {/* ── SECTION 3: Features Grid ───────────────────────────────────────── */}
-      <section style={{ padding: '100px 0' }}>
-        <PageRow>
-          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} style={{ textAlign: 'center', marginBottom: 64 }}>
-            <Label text="Features" />
-            <h2 style={{ fontSize: 'clamp(34px, 5vw, 52px)', fontWeight: 900, letterSpacing: '-1.5px', marginBottom: 16 }}>
-              Everything you need
-            </h2>
-            <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.4)', maxWidth: 480, margin: '0 auto', lineHeight: 1.7 }}>
-              Fair, fast and fully transparent — every filter creators need in one free tool.
-            </p>
-          </motion.div>
+          {/* SECTION 8: Final CTA */}
+          <section style={{ padding: '120px 0', background: '#0a0d12', position: 'relative', overflow: 'hidden' }}>
+            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 600, height: 200, background: 'rgba(163,230,53,0.05)', filter: 'blur(80px)', borderRadius: '50%', pointerEvents: 'none' }} />
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {FEATURES.map((f, i) => (
+            <PageRow>
               <motion.div
-                key={i}
-                custom={i}
-                variants={fadeUp}
+                variants={scaleIn}
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true }}
-                whileHover={{ y: -8, borderColor: 'rgba(255,0,0,0.28)' }}
-                style={{
-                  background: '#0a0d12',
-                  border: '1px solid rgba(255,255,255,0.07)',
-                  borderRadius: 20,
-                  padding: '28px 24px',
-                  cursor: 'default',
-                  transition: 'border-color 0.3s',
-                }}
+                style={{ textAlign: 'center', position: 'relative' }}
               >
-                <div style={{ fontSize: 32, marginBottom: 16 }}>{f.icon}</div>
-                <h3 style={{ fontSize: 16, fontWeight: 700, color: '#fff', marginBottom: 10 }}>{f.title}</h3>
-                <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.4)', lineHeight: 1.7 }}>{f.desc}</p>
-              </motion.div>
-            ))}
-          </div>
-        </PageRow>
-      </section>
-
-      <Divider />
-
-      {/* ── SECTION 4: Stats ──────────────────────────────────────────────── */}
-      <section style={{ padding: '90px 0', background: '#0a0d12' }}>
-        <PageRow>
-          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} style={{ textAlign: 'center', marginBottom: 60 }}>
-            <Label text="By the Numbers" />
-            <h2 style={{ fontSize: 'clamp(34px, 5vw, 52px)', fontWeight: 900, letterSpacing: '-1.5px' }}>
-              Trusted by creators
-            </h2>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 20 }}>
-              <Counter target={10000} suffix="+" label="Giveaways Picked" />
-            </div>
-            <div style={{ background: 'rgba(255,0,0,0.05)', border: '1px solid rgba(255,0,0,0.12)', borderRadius: 20 }}>
-              <Counter target={500000} suffix="+" label="Comments Loaded" />
-            </div>
-            <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)', borderRadius: 20 }}>
-              <Counter target={25000} suffix="+" label="Winners Selected" />
-            </div>
-          </div>
-        </PageRow>
-      </section>
-
-      <Divider />
-
-      {/* ── SECTION 5: How It Works ───────────────────────────────────────── */}
-      <section style={{ padding: '100px 0' }}>
-        <PageRow>
-          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} style={{ textAlign: 'center', marginBottom: 72 }}>
-            <Label text="How It Works" />
-            <h2 style={{ fontSize: 'clamp(34px, 5vw, 52px)', fontWeight: 900, letterSpacing: '-1.5px', marginBottom: 14 }}>
-              Three steps. Done.
-            </h2>
-            <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.4)', maxWidth: 400, margin: '0 auto' }}>
-              From URL to verified winner in under 60 seconds.
-            </p>
-          </motion.div>
-
-          <div style={{ position: 'relative' }}>
-            {/* animated connector line */}
-            <div className="hidden md:block" style={{ position: 'absolute', top: 28, left: 'calc(16.66% + 28px)', right: 'calc(16.66% + 28px)', height: 1 }}>
-              <motion.div
-                initial={{ scaleX: 0 }}
-                whileInView={{ scaleX: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1.2, delay: 0.3, ease: EASE }}
-                style={{ height: '100%', background: 'linear-gradient(90deg, rgba(255,0,0,0.5), rgba(255,0,0,0.2), rgba(255,0,0,0.5))', transformOrigin: 'left' }}
-              />
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-8">
-              {[
-                { num: '01', title: 'Paste Your URL', desc: 'Drop any YouTube video or Shorts link into the input bar. We extract the video ID automatically.' },
-                { num: '02', title: 'Set Your Filters', desc: 'Choose keywords, emojis, time window and how many winners to pick. Or run with no filters at all.' },
-                { num: '03', title: 'Pick & Verify', desc: 'Randomly select winners and instantly generate a public proof page you can share with your audience.' },
-              ].map((step, i) => (
-                <motion.div
-                  key={i}
-                  custom={i}
-                  variants={fadeUp}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true }}
-                  style={{ textAlign: 'center', position: 'relative' }}
+                <Label text="Start Now" />
+                <h2 style={{ fontSize: 'clamp(42px, 7vw, 80px)', fontWeight: 900, lineHeight: 1.02, letterSpacing: '-2.5px', marginBottom: 20 }}>
+                  Run your giveaway<br />
+                  <span style={{ color: '#a3e635' }}>fairly today.</span>
+                </h2>
+                <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.35)', maxWidth: 380, margin: '0 auto 48px', lineHeight: 1.7 }}>
+                  Free forever. No signup. No limits. Paste your URL and pick verified winners in seconds.
+                </p>
+                <motion.a
+                  href="/#tool"
+                  whileHover={{ scale: 1.06 }}
+                  whileTap={{ scale: 0.96 }}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: 12,
+                    height: 58,
+                    padding: '0 40px',
+                    borderRadius: 16,
+                    background: '#a3e635',
+                    color: '#000',
+                    fontWeight: 900,
+                    fontSize: 17,
+                    textDecoration: 'none',
+                    boxShadow: '0 12px 40px rgba(163,230,53,0.2)',
+                  }}
                 >
-                  <div style={{ width: 56, height: 56, borderRadius: 18, background: 'rgba(255,0,0,0.1)', border: '1px solid rgba(255,0,0,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', position: 'relative', zIndex: 1 }}>
-                    <span style={{ color: '#FF0000', fontWeight: 900, fontSize: 18 }}>{step.num}</span>
-                  </div>
-                  <h3 style={{ fontSize: 18, fontWeight: 800, color: '#fff', marginBottom: 12 }}>{step.title}</h3>
-                  <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.4)', lineHeight: 1.75, maxWidth: 240, margin: '0 auto' }}>{step.desc}</p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </PageRow>
-      </section>
+                  Start Free
+                  <span style={{ fontSize: 22 }}>→</span>
+                </motion.a>
+                <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.2)', marginTop: 20, letterSpacing: '0.05em' }}>
+                  No account needed · Works with any YouTube video or Short
+                </p>
+              </motion.div>
+            </PageRow>
+          </section>
 
-      <Divider />
+        </div>
+        {/* END content sections */}
 
-      {/* ── SECTION 6: Verification ───────────────────────────────────────── */}
-      <section style={{ padding: '100px 0', background: '#0a0d12' }}>
-        <PageRow>
-          <div className="grid md:grid-cols-2 gap-16 items-center">
-            {/* Left text */}
-            <motion.div variants={fromLeft} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-60px' }}>
-              <Label text="Verification System" />
-              <h2 style={{ fontSize: 'clamp(36px, 5vw, 54px)', fontWeight: 900, lineHeight: 1.08, letterSpacing: '-1.5px', marginBottom: 20 }}>
-                100%{' '}
-                <span style={{ color: '#FF0000' }}>Transparent</span>{' '}
-                giveaways
-              </h2>
-              <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.45)', lineHeight: 1.75, marginBottom: 36, maxWidth: 420 }}>
-                Every giveaway generates a permanent public verification page at a
-                unique URL. Share it with your audience so they can confirm the
-                winner was chosen fairly — no trust-me required.
-              </p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-                {[
-                  'Public verification URL generated instantly',
-                  'Shows every filter used in the draw',
-                  'Displays total valid entry count',
-                  'Downloadable winner cards as shareable proof',
-                ].map((item, i) => (
-                  <motion.div
-                    key={i}
-                    custom={i}
-                    variants={fadeUp}
-                    initial="hidden"
-                    whileInView="visible"
-                    viewport={{ once: true }}
-                    style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}
-                  >
-                    <div style={{ width: 22, height: 22, borderRadius: '50%', background: 'rgba(255,0,0,0.1)', border: '1px solid rgba(255,0,0,0.25)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: 2 }}>
-                      <span style={{ color: '#FF0000', fontSize: 10, fontWeight: 700 }}>✓</span>
-                    </div>
-                    <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.6)', lineHeight: 1.55 }}>{item}</span>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
+        {/* RIGHT STICKY AD — renders once, sticks as user scrolls */}
+        <AdSlot side="right" />
 
-            {/* Right mockup */}
-            <motion.div variants={fromRight} initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-60px' }}>
-              <VerifyMockup />
-            </motion.div>
-          </div>
-        </PageRow>
-      </section>
-
-      <Divider />
-
-      {/* ── SECTION 7: FAQ ────────────────────────────────────────────────── */}
-      <section style={{ padding: '100px 0' }}>
-        <PageRow>
-          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} style={{ textAlign: 'center', marginBottom: 60 }}>
-            <Label text="FAQ" />
-            <h2 style={{ fontSize: 'clamp(34px, 5vw, 52px)', fontWeight: 900, letterSpacing: '-1.5px' }}>
-              Common questions
-            </h2>
-          </motion.div>
-          <div style={{ maxWidth: 720, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 10 }}>
-            {FAQS.map((faq, i) => (
-              <FAQItem key={i} q={faq.q} a={faq.a} i={i} />
-            ))}
-          </div>
-        </PageRow>
-      </section>
-
-      <Divider />
-
-      {/* ── SECTION 8: Final CTA ──────────────────────────────────────────── */}
-      <section style={{ padding: '120px 0', background: '#0a0d12', position: 'relative', overflow: 'hidden' }}>
-        {/* glow */}
-        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 600, height: 200, background: 'rgba(255,0,0,0.07)', filter: 'blur(80px)', borderRadius: '50%', pointerEvents: 'none' }} />
-
-        <PageRow>
-          <motion.div
-            variants={scaleIn}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            style={{ textAlign: 'center', position: 'relative' }}
-          >
-            <Label text="Start Now" />
-            <h2 style={{ fontSize: 'clamp(42px, 7vw, 80px)', fontWeight: 900, lineHeight: 1.02, letterSpacing: '-2.5px', marginBottom: 20 }}>
-              Run your giveaway<br />
-              <span style={{ color: '#FF0000' }}>fairly today.</span>
-            </h2>
-            <p style={{ fontSize: 16, color: 'rgba(255,255,255,0.35)', maxWidth: 380, margin: '0 auto 48px', lineHeight: 1.7 }}>
-              Free forever. No signup. No limits. Paste your URL and pick verified winners in seconds.
-            </p>
-            <motion.a
-              href="/#tool"
-              whileHover={{ scale: 1.06, background: '#CC0000', boxShadow: '0 20px 60px rgba(255,0,0,0.35)' }}
-              whileTap={{ scale: 0.96 }}
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 12,
-                height: 58,
-                padding: '0 40px',
-                borderRadius: 16,
-                background: '#FF0000',
-                color: '#fff',
-                fontWeight: 900,
-                fontSize: 17,
-                textDecoration: 'none',
-                boxShadow: '0 12px 40px rgba(255,0,0,0.25)',
-                transition: 'all 0.2s',
-              }}
-            >
-              Start Free
-              <span style={{ fontSize: 22 }}>→</span>
-            </motion.a>
-            <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.2)', marginTop: 20, letterSpacing: '0.05em' }}>
-              No account needed · Works with any YouTube video or Short
-            </p>
-          </motion.div>
-        </PageRow>
-      </section>
+      </div>
+      {/* END outer wrapper */}
 
     </div>
   )
