@@ -3,6 +3,7 @@ import "./globals.css";
 
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
+import ScrollToTop from "@/components/ScrollToTop";
 import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
@@ -58,11 +59,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className="bg-[#0B0F19] text-white">
@@ -70,7 +67,8 @@ export default function RootLayout({
         <Toaster position="top-center" />
         {children}
         <SiteFooter />
+        <ScrollToTop />
       </body>
     </html>
-  );
+  )
 }
