@@ -1,7 +1,7 @@
 // This file stays in app/contact/page.tsx
 // Move the ContactPage component to app/contact/ContactClient.tsx
 // and import it here — this keeps metadata working with 'use client'
-
+'Use client'
 import ContactClient from "./ContactClient"
 
 export const metadata = {
