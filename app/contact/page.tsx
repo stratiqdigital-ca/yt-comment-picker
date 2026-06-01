@@ -1,5 +1,3 @@
-'use client'
-
 // ─── EMAIL SETUP GUIDE ───────────────────────────────────────────────────────
 // This form uses Formspree — free, works on any host (Vercel, Hostinger, etc.)
 //
