@@ -1,3 +1,5 @@
+'use client'
+
 export default function SiteFooter() {
   const year = new Date().getFullYear()
 
