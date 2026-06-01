@@ -21,7 +21,7 @@ const S = {
   cta:      "h-12 px-7 rounded-xl bg-lime-400 text-black font-black flex items-center gap-2 hover:bg-lime-300 transition-colors text-sm whitespace-nowrap",
   ctaGhost: "h-12 px-6 rounded-xl border border-lime-400/30 text-lime-400 font-bold flex items-center gap-2 hover:border-lime-400/60 hover:bg-lime-400/5 transition-all text-sm whitespace-nowrap",
   chip:     "inline-flex items-center gap-2 text-sm text-zinc-400",
-  divider:  "w-full h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent my-24",
+  divider:  "w-full h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent my-12",
 };
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
