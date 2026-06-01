@@ -10,9 +10,9 @@ const S = {
   h2:       "text-2xl font-black text-white mb-4",
   body:     "text-zinc-400 text-base leading-relaxed",
   bodySm:   "text-zinc-500 text-sm leading-relaxed",
-  card:     "bg-[#111827] border border-white/[0.07] rounded-2xl p-6",
+  card:     "bg-[#111827] border border-white/[0.07] rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 hover:border-lime-400/25 hover:shadow-[0_8px_32px_rgba(163,230,53,0.06)]",
   divider:  "w-full h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent my-10",
-  inputBase:"w-full bg-white/[0.04] border border-white/[0.10] rounded-xl px-4 py-3 text-white text-sm placeholder:text-zinc-600 outline-none focus:border-lime-400/50 transition-colors",
+  inputBase:"w-full bg-[#111827] border border-white/[0.10] rounded-xl px-4 py-3 text-white text-sm placeholder:text-zinc-600 outline-none focus:border-lime-400/50 transition-colors",
   label2:   "block text-sm font-bold text-zinc-300 mb-2",
   cta:      "inline-flex h-11 px-6 rounded-xl bg-lime-400 text-black font-black items-center gap-2 hover:bg-lime-300 transition-colors text-sm",
   ctaGhost: "inline-flex h-11 px-6 rounded-xl border border-lime-400/30 text-lime-400 font-bold items-center gap-2 hover:border-lime-400/60 transition-colors text-sm",
@@ -80,13 +80,24 @@ function ContactForm() {
       </div>
       <div>
         <label className={S.label2} htmlFor="subject">Subject</label>
-        <select id="subject" name="subject" required value={form.subject} onChange={handleChange} className={`${S.inputBase} cursor-pointer`}>
-          <option value="" disabled>Select a topic...</option>
-          <option value="Tool Support">Tool Support</option>
-          <option value="Verification Review">Verification Review / Removal</option>
-          <option value="Business Inquiry">Business Inquiry</option>
-          <option value="Feedback">Feedback or Feature Request</option>
-          <option value="Other">Other</option>
+        <select
+  id="subject"
+  name="subject"
+  required
+  value={form.subject}
+  onChange={handleChange}
+  className={`${S.inputBase} cursor-pointer`}
+  style={{
+    background: '#111827',
+    colorScheme: 'dark',
+  }}
+>
+          <option value="" disabled style={{ background: '#111827', color: '#71717a' }}>Select a topic...</option>
+<option value="Tool Support" style={{ background: '#111827', color: '#fff' }}>Tool Support</option>
+<option value="Verification Review" style={{ background: '#111827', color: '#fff' }}>Verification Review / Removal</option>
+<option value="Business Inquiry" style={{ background: '#111827', color: '#fff' }}>Business Inquiry</option>
+<option value="Feedback" style={{ background: '#111827', color: '#fff' }}>Feedback or Feature Request</option>
+<option value="Other" style={{ background: '#111827', color: '#fff' }}>Other</option>
         </select>
       </div>
       <div>

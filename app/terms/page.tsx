@@ -10,7 +10,7 @@ const S = {
   h2:      "text-2xl font-black text-white mt-10 mb-4",
   body:    "text-zinc-400 text-base leading-relaxed",
   bodySm:  "text-zinc-500 text-sm leading-relaxed",
-  card:    "bg-[#111827] border border-white/[0.07] rounded-2xl p-6 mt-4",
+  card:    "bg-[#111827] border border-white/[0.07] rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 hover:border-lime-400/25 hover:shadow-[0_8px_32px_rgba(163,230,53,0.06)]",
   divider: "w-full h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent my-10",
   cta:     "inline-flex h-11 px-6 rounded-xl bg-lime-400 text-black font-black items-center gap-2 hover:bg-lime-300 transition-colors text-sm",
   ctaGhost:"inline-flex h-11 px-6 rounded-xl border border-lime-400/30 text-lime-400 font-bold items-center gap-2 hover:border-lime-400/60 transition-colors text-sm",
