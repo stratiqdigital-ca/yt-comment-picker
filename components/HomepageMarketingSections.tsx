@@ -860,7 +860,7 @@ export default function HomepageMarketingSections() {
                   Start Free
                   <span style={{ fontSize: 22 }}>→</span>
                 </motion.a>
-                <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.2)', marginTop: 20, letterSpacing: '0.05em' }}>
+                <p style={{ fontSize: 12, color: '#0B0F19', marginTop: 20, letterSpacing: '0.05em' }}>
                   No account needed · Works with any YouTube video or Short
                 </p>
               </motion.div>
