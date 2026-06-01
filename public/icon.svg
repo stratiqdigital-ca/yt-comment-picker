@@ -1,0 +1,34 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background rounded square -->
+  <rect width="512" height="512" rx="110" fill="#111827"/>
+
+  <!-- Comment bubble body -->
+  <rect x="80" y="130" width="310" height="210" rx="52" fill="#0B0F19" stroke="#a3e635" stroke-width="12"/>
+  <!-- Bubble tail -->
+  <path d="M110 340 L110 420 L200 340 Z" fill="#0B0F19" stroke="#a3e635" stroke-width="12" stroke-linejoin="round"/>
+
+  <!-- Comment lines inside bubble -->
+  <rect x="116" y="196" width="160" height="24" rx="12" fill="#a3e635"/>
+  <rect x="116" y="242" width="110" height="24" rx="12" fill="#a3e635" opacity="0.4"/>
+  <rect x="116" y="288" width="136" height="24" rx="12" fill="#a3e635" opacity="0.2"/>
+
+  <!-- Trophy badge — top right of bubble -->
+  <circle cx="368" cy="148" r="80" fill="#0B0F19" stroke="#a3e635" stroke-width="12"/>
+  <circle cx="368" cy="148" r="64" fill="#a3e635"/>
+
+  <!-- Trophy cup body -->
+  <rect x="342" y="114" width="52" height="46" rx="10" fill="#0B0F19"/>
+  <!-- Trophy handles left -->
+  <path d="M342 124 Q322 124 322 144 Q322 162 342 162" fill="none" stroke="#0B0F19" stroke-width="10" stroke-linecap="round"/>
+  <!-- Trophy handles right -->
+  <path d="M394 124 Q414 124 414 144 Q414 162 394 162" fill="none" stroke="#0B0F19" stroke-width="10" stroke-linecap="round"/>
+  <!-- Trophy stem -->
+  <rect x="357" y="160" width="22" height="16" rx="4" fill="#0B0F19"/>
+  <!-- Trophy base -->
+  <rect x="345" y="174" width="46" height="10" rx="5" fill="#0B0F19"/>
+  <!-- Trophy base wide -->
+  <rect x="338" y="182" width="60" height="10" rx="5" fill="#0B0F19"/>
+
+  <!-- Star inside cup -->
+  <text x="368" y="154" text-anchor="middle" font-size="28" fill="#a3e635" font-family="sans-serif">★</text>
+</svg>

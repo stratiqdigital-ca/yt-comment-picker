@@ -10,9 +10,18 @@ export default function SiteHeader() {
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
 
         {/* Logo */}
-        <a href="/" className="font-black text-xl">
-          <span className="text-lime-400">YT</span> Giveaway Picker
-        </a>
+        <a href="/" className="flex items-center">
+  <img
+    src="/icon.svg"
+    alt="YT Giveaway Picker"
+    width={36}
+    height={36}
+    className="rounded-lg"
+  />
+  <span className="ml-2 font-black text-xl">
+    <span className="text-lime-400">YT</span> Giveaway Picker
+  </span>
+</a>
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-6 text-sm text-zinc-400">
