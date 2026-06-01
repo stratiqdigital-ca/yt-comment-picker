@@ -57,7 +57,7 @@ type HeroProps = {
 }
 
 // ─── Rotating headline words ──────────────────────────────────────────────────
-const ROTATE_WORDS = ['YouTube Videos', 'YouTube Shorts', 'Live Streams Videos', 'From Any Channel']
+const ROTATE_WORDS = ['YouTube Videos', 'YouTube Shorts', 'From Any Channel']
 
 // ─── Floating comment cards ───────────────────────────────────────────────────
 const FLOAT_CARDS = [
