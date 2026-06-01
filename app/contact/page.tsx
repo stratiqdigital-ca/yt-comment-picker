@@ -1,30 +1,275 @@
-export const metadata = {
-  title: "Contact | YT Giveaway Picker",
-  description: "Contact YT Giveaway Picker.",
-};
+'use client'
+
+// ─── EMAIL SETUP GUIDE ───────────────────────────────────────────────────────
+// This form uses Formspree — free, works on any host (Vercel, Hostinger, etc.)
+//
+// SETUP STEPS (5 minutes):
+// 1. Go to https://formspree.io and create a free account
+// 2. Click "New Form" — name it "YT Giveaway Picker Contact"
+// 3. Copy your form endpoint — looks like: https://formspree.io/f/xabc1234
+// 4. Replace the FORMSPREE_ENDPOINT value below with your endpoint
+// 5. Every submission goes straight to your inbox — no backend needed
+//
+// Works on: Vercel, Hostinger, Netlify, any host — no changes needed
+// ─────────────────────────────────────────────────────────────────────────────
+
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/YOUR_FORM_ID"
+// ↑ Replace YOUR_FORM_ID with your actual Formspree form ID after signup
+
+import { useState } from "react"
+
+export const metadata = undefined
+// Note: metadata must be in a separate generateMetadata or layout file
+// when using 'use client'. Add this to your layout or a parent server component.
+
+const S = {
+  label:    "text-lime-400 font-black uppercase tracking-[0.2em] text-xs mb-3 block",
+  h1:       "text-5xl md:text-6xl font-black leading-tight",
+  h2:       "text-2xl font-black text-white mb-4",
+  body:     "text-zinc-400 text-base leading-relaxed",
+  bodySm:   "text-zinc-500 text-sm leading-relaxed",
+  card:     "bg-[#111827] border border-white/[0.07] rounded-2xl p-6",
+  divider:  "w-full h-px bg-gradient-to-r from-transparent via-white/[0.06] to-transparent my-10",
+  inputBase:"w-full bg-white/[0.04] border border-white/[0.10] rounded-xl px-4 py-3 text-white text-sm placeholder:text-zinc-600 outline-none focus:border-lime-400/50 transition-colors",
+  label2:   "block text-sm font-bold text-zinc-300 mb-2",
+  cta:      "inline-flex h-11 px-6 rounded-xl bg-lime-400 text-black font-black items-center gap-2 hover:bg-lime-300 transition-colors text-sm",
+  ctaGhost: "inline-flex h-11 px-6 rounded-xl border border-lime-400/30 text-lime-400 font-bold items-center gap-2 hover:border-lime-400/60 transition-colors text-sm",
+}
+
+const REASONS = [
+  { icon: "🛠️", title: "Tool Support",         desc: "Having trouble loading comments or picking winners? Describe your issue and we will help." },
+  { icon: "✅", title: "Verification Review",   desc: "Need a specific verification record reviewed or removed? Include the verification ID." },
+  { icon: "💼", title: "Business Inquiries",    desc: "Sponsorships, partnerships or API access requests — reach out with your proposal." },
+  { icon: "💬", title: "Feedback",              desc: "Feature suggestions, bug reports or general feedback — we read every message." },
+]
+
+function ContactForm() {
+  const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle")
+  const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" })
+
+  function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
+    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    setStatus("sending")
+    try {
+      const res = await fetch(FORMSPREE_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        body: JSON.stringify(form),
+      })
+      if (res.ok) {
+        setStatus("success")
+        setForm({ name: "", email: "", subject: "", message: "" })
+      } else {
+        setStatus("error")
+      }
+    } catch {
+      setStatus("error")
+    }
+  }
+
+  if (status === "success") {
+    return (
+      <div className="bg-lime-400/[0.06] border border-lime-400/20 rounded-2xl p-10 text-center">
+        <div className="text-4xl mb-4">✅</div>
+        <h3 className="text-xl font-black text-white mb-2">Message Sent!</h3>
+        <p className={S.body}>We got your message and will reply within 48 hours. Thank you for reaching out.</p>
+        <button
+          onClick={() => setStatus("idle")}
+          className="mt-6 text-lime-400 text-sm font-bold hover:text-lime-300 transition-colors"
+        >
+          Send another message →
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-5">
+      {/* Name + Email row */}
+      <div className="grid md:grid-cols-2 gap-4">
+        <div>
+          <label className={S.label2} htmlFor="name">Your Name</label>
+          <input
+            id="name"
+            name="name"
+            type="text"
+            required
+            placeholder="Jane Smith"
+            value={form.name}
+            onChange={handleChange}
+            className={S.inputBase}
+          />
+        </div>
+        <div>
+          <label className={S.label2} htmlFor="email">Email Address</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            required
+            placeholder="jane@example.com"
+            value={form.email}
+            onChange={handleChange}
+            className={S.inputBase}
+          />
+        </div>
+      </div>
+
+      {/* Subject */}
+      <div>
+        <label className={S.label2} htmlFor="subject">Subject</label>
+        <select
+          id="subject"
+          name="subject"
+          required
+          value={form.subject}
+          onChange={handleChange}
+          className={`${S.inputBase} cursor-pointer`}
+        >
+          <option value="" disabled>Select a topic...</option>
+          <option value="Tool Support">Tool Support</option>
+          <option value="Verification Review">Verification Review / Removal</option>
+          <option value="Business Inquiry">Business Inquiry</option>
+          <option value="Feedback">Feedback or Feature Request</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      {/* Message */}
+      <div>
+        <label className={S.label2} htmlFor="message">Message</label>
+        <textarea
+          id="message"
+          name="message"
+          required
+          rows={6}
+          placeholder="Describe your question or request in as much detail as possible..."
+          value={form.message}
+          onChange={handleChange}
+          className={`${S.inputBase} resize-none`}
+        />
+      </div>
+
+      {/* Error state */}
+      {status === "error" && (
+        <p className="text-red-400 text-sm">
+          Something went wrong. Please try again or email us directly at support@ytgiveawaypicker.com
+        </p>
+      )}
+
+      {/* Submit */}
+      <button
+        type="submit"
+        disabled={status === "sending"}
+        className="w-full h-12 rounded-xl bg-lime-400 text-black font-black text-sm hover:bg-lime-300 transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+      >
+        {status === "sending" ? (
+          <>
+            <span className="animate-spin inline-block">⟳</span>
+            Sending...
+          </>
+        ) : (
+          "Send Message →"
+        )}
+      </button>
+
+      <p className={`${S.bodySm} text-center`}>
+        We aim to reply within 48 hours · support@ytgiveawaypicker.com
+      </p>
+    </form>
+  )
+}
 
 export default function ContactPage() {
   return (
     <main className="min-h-screen bg-[#0B0F19] text-white px-6 py-16">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-5xl font-black">Contact</h1>
+      <div className="max-w-5xl mx-auto">
 
-        <div className="mt-8 rounded-3xl border border-white/10 bg-white/5 p-8">
-          <p className="text-zinc-400 leading-relaxed">
-            For support, feedback, verification review, or business inquiries,
-            contact us at:
-          </p>
-          
-          <p className="text-green-400 font-semibold text-lg break-all overflow-wrap-anywhere">
-            support@ytgiveawaypicker.com
-            </p>
+        {/* Hero */}
+        <span className={S.label}>Support</span>
+        <h1 className={S.h1}>Contact Us</h1>
+        <p className={`${S.body} mt-5 max-w-2xl`}>
+          Have a question, issue or feedback about YT Giveaway Picker? Fill in
+          the form below and we will get back to you within 48 hours.
+        </p>
 
-          <p className="mt-6 text-zinc-500">
-            Replace this email with your real support email before launch.
-          </p>
-          <div className="bg-[#1a1a1a] rounded-xl p-6 overflow-hidden"></div>
+        <div className={S.divider} />
+
+        {/* Reason cards */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+          {REASONS.map(r => (
+            <div key={r.title} className={S.card}>
+              <div className="text-2xl mb-3">{r.icon}</div>
+              <h3 className="text-sm font-black text-white mb-1.5">{r.title}</h3>
+              <p className={S.bodySm}>{r.desc}</p>
+            </div>
+          ))}
         </div>
+
+        {/* Main layout: form + sidebar */}
+        <div className="grid md:grid-cols-[1fr_280px] gap-8 items-start">
+
+          {/* Form */}
+          <div className={S.card}>
+            <h2 className={S.h2}>Send a Message</h2>
+            <ContactForm />
+          </div>
+
+          {/* Sidebar info */}
+          <div className="flex flex-col gap-4">
+            <div className={S.card}>
+              <p className="text-xs font-bold uppercase tracking-widest text-lime-400 mb-3">Email</p>
+              <a
+                href="mailto:support@ytgiveawaypicker.com"
+                className="text-sm font-bold text-white break-all hover:text-lime-400 transition-colors"
+              >
+                support@ytgiveawaypicker.com
+              </a>
+              <p className={`${S.bodySm} mt-2`}>For urgent support, email directly.</p>
+            </div>
+
+            <div className={S.card}>
+              <p className="text-xs font-bold uppercase tracking-widest text-lime-400 mb-3">Response Time</p>
+              <p className="text-sm font-bold text-white">Within 48 hours</p>
+              <p className={`${S.bodySm} mt-1`}>Monday to Friday · English only</p>
+            </div>
+
+            <div className={S.card}>
+              <p className="text-xs font-bold uppercase tracking-widest text-lime-400 mb-3">Built by</p>
+              <a
+                href="https://stratiqdigital.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm font-bold text-white hover:text-lime-400 transition-colors"
+              >
+                Strat IQ Digital →
+              </a>
+              <p className={`${S.bodySm} mt-1`}>stratiqdigital.com</p>
+            </div>
+          </div>
+        </div>
+
+        <div className={S.divider} />
+
+        {/* Internal links */}
+        <div className="bg-lime-400/[0.03] border border-lime-400/[0.12] rounded-2xl p-8">
+          <span className={S.label}>Related Pages</span>
+          <h2 className="text-xl font-black text-white mb-3">Looking for Something Else?</h2>
+          <p className={`${S.body} mb-6`}>
+            Check our privacy policy, terms of use or go straight to the free tool.
+          </p>
+          <div className="flex flex-wrap gap-3">
+            <a href="/#tool" className={S.cta}>Use the Tool →</a>
+            <a href="/privacy-policy" className={S.ctaGhost}>Privacy Policy →</a>
+            <a href="/terms" className={S.ctaGhost}>Terms of Use →</a>
+          </div>
+        </div>
+
       </div>
     </main>
-  );
+  )
 }
