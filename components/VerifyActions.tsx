@@ -1,24 +1,13 @@
 "use client";
-
 import { toPng } from "html-to-image";
 
-type Props = {
-  targetId: string;
-  filename: string;
-  label: string;
-};
+type Props = { targetId: string; filename: string; label: string };
 
 export default function VerifyActions({ targetId, filename, label }: Props) {
   async function downloadCard() {
-    const element = document.getElementById(targetId);
-    if (!element) return;
-
-    const dataUrl = await toPng(element, {
-      cacheBust: true,
-      pixelRatio: 2,
-      backgroundColor: "#0B0F19",
-    });
-
+    const el = document.getElementById(targetId);
+    if (!el) return;
+    const dataUrl = await toPng(el, { cacheBust: true, pixelRatio: 2, backgroundColor: "#0B0F1A" });
     const link = document.createElement("a");
     link.download = filename;
     link.href = dataUrl;
@@ -26,10 +15,9 @@ export default function VerifyActions({ targetId, filename, label }: Props) {
   }
 
   return (
-    <button
-      onClick={downloadCard}
-      className="h-11 px-5 rounded-xl bg-lime-400 text-black font-black hover:scale-[1.02] transition"
-    >
+    <button onClick={downloadCard}
+      className="h-11 px-5 rounded-xl font-black hover:scale-[1.02] transition"
+      style={{ background: 'var(--accent)', color: 'var(--accent-on)' }}>
       {label}
     </button>
   );

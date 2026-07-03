@@ -1,32 +1,19 @@
 'use client'
 
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 
-// ─── Infinite Ticker ─────────────────────────────────────────────────────────
+// ─── Ticker ──────────────────────────────────────────────────────────────────
 const STEPS = [
-  ' Paste YouTube URL',
-  ' Load All Comments',
-  ' Set Keyword Filter',
-  ' Set Emoji Filter',
-  ' Set Time Window',
-  ' Pick Random Winners',
-  ' Generate Verification Page',
-  ' Download Winner Cards',
-  ' Share Proof Publicly',
+  'Paste YouTube URL', 'Load All Comments', 'Set Keyword Filter',
+  'Set Emoji Filter', 'Set Time Window', 'Pick Random Winners',
+  'Generate Verification Page', 'Download Winner Cards', 'Share Proof Publicly',
 ]
 
 function Ticker() {
   const doubled = [...STEPS, ...STEPS, ...STEPS]
   return (
-    <div
-      className="w-full overflow-hidden py-4"
-      style={{
-        background: '#0a0d12',
-        borderTop: '1px solid rgba(255,255,255,0.06)',
-        borderBottom: '1px solid rgba(255,255,255,0.06)',
-      }}
-    >
+    <div className="w-full overflow-hidden py-4" style={{ background: 'var(--bg-tertiary)', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}>
       <motion.div
         className="flex whitespace-nowrap"
         style={{ gap: 48 }}
@@ -34,13 +21,9 @@ function Ticker() {
         transition={{ duration: 35, repeat: Infinity, ease: 'linear' }}
       >
         {doubled.map((item, i) => (
-          <span
-            key={i}
-            className="shrink-0 flex items-center"
-            style={{ gap: 24, fontSize: 13, color: 'rgba(255,255,255,0.35)', fontWeight: 500 }}
-          >
+          <span key={i} className="shrink-0 flex items-center" style={{ gap: 24, fontSize: 13, color: 'var(--text-muted)', fontWeight: 500 }}>
             {item}
-            <span style={{ color: '#a3e635', fontSize: 7 }}>◆</span>
+            <span style={{ color: 'var(--accent)', fontSize: 7 }}>◆</span>
           </span>
         ))}
       </motion.div>
@@ -48,7 +31,7 @@ function Ticker() {
   )
 }
 
-// ─── Types ────────────────────────────────────────────────────────────────────
+// ─── Types ───────────────────────────────────────────────────────────────────
 type HeroProps = {
   videoUrl: string
   setVideoUrl: (v: string) => void
@@ -56,29 +39,61 @@ type HeroProps = {
   onLoad: () => void
 }
 
-// ─── Rotating headline words ──────────────────────────────────────────────────
+// ─── Rotating Words ──────────────────────────────────────────────────────────
 const ROTATE_WORDS = ['YouTube Videos', 'YouTube Shorts', 'From Any Channel']
 
-// ─── Floating comment cards ───────────────────────────────────────────────────
-const FLOAT_CARDS = [
-  { user: '@creator_fan',   text: 'giveaway! 🎉',  delay: 0,   duration: 6,   offsetY: -14 },
-  { user: '@yt_subscriber', text: '#giveaway 🔥',  delay: 1.5, duration: 7,   offsetY: -10 },
-  { user: '@loyal_viewer',  text: 'Pick me! 🏆',   delay: 0.8, duration: 5.5, offsetY: -12 },
-  { user: '@shorts_fan',    text: 'love this ❤️',  delay: 2.2, duration: 6.5, offsetY: -16 },
-]
+// ─── Float Badge ─────────────────────────────────────────────────────────────
+function FloatBadge({ user, text, delay, duration, offsetY, style }: any) {
+  return (
+    <motion.div
+      className="floating-badge"
+      initial={{ opacity: 0, scale: 0.8 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ delay, duration: 0.6 }}
+      style={{ position: 'absolute', zIndex: 10, ...style }}
+    >
+      <motion.div
+        animate={{ y: [0, offsetY, 0] }}
+        transition={{ duration, repeat: Infinity, ease: 'easeInOut' }}
+        style={{
+          background: 'color-mix(in srgb, var(--bg-secondary) 95%, transparent)',
+          border: '1px solid var(--border)',
+          borderRadius: 16, padding: '8px 14px',
+          display: 'flex', alignItems: 'center', gap: 10,
+          backdropFilter: 'blur(16px)',
+          boxShadow: 'var(--shadow-card)',
+          whiteSpace: 'nowrap',
+        }}
+      >
+        <div style={{
+          width: 28, height: 28, borderRadius: 8,
+          background: 'var(--accent-soft)', border: '1px solid var(--accent-border)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontSize: 12, fontWeight: 700, color: 'var(--accent-text)',
+        }}>
+          {user[1]?.toUpperCase()}
+        </div>
+        <div>
+          <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-primary)' }}>{user}</p>
+          <p style={{ fontSize: 10, color: 'var(--text-muted)' }}>{text}</p>
+        </div>
+      </motion.div>
+    </motion.div>
+  )
+}
 
-// ─── Particle dots ────────────────────────────────────────────────────────────
-const PARTICLES = Array.from({ length: 28 }, (_, i) => ({
+// ─── Particles ───────────────────────────────────────────────────────────────
+const PARTICLES = Array.from({ length: 20 }, (_, i) => ({
   id: i,
   x: Math.random() * 100,
   y: Math.random() * 100,
   size: Math.random() * 2 + 1,
   duration: Math.random() * 4 + 3,
   delay: Math.random() * 4,
-  opacity: Math.random() * 0.4 + 0.1,
+  opacity: Math.random() * 0.3 + 0.05,
 }))
 
-// ─── 3D Tilt Card (mouse-reactive) ───────────────────────────────────────────
+// ─── 3D Tilt Card ────────────────────────────────────────────────────────────
 function TiltCard() {
   const cardRef = useRef<HTMLDivElement>(null)
   const [tilt, setTilt] = useState({ x: 0, y: 0 })
@@ -90,14 +105,7 @@ function TiltCard() {
     const rect = card.getBoundingClientRect()
     const cx = rect.left + rect.width / 2
     const cy = rect.top + rect.height / 2
-    const dx = (e.clientX - cx) / (rect.width / 2)
-    const dy = (e.clientY - cy) / (rect.height / 2)
-    setTilt({ x: -dy * 14, y: dx * 14 })
-  }, [])
-
-  const handleMouseLeave = useCallback(() => {
-    setTilt({ x: 0, y: 0 })
-    setHovered(false)
+    setTilt({ x: -(e.clientY - cy) / (rect.height / 2) * 12, y: (e.clientX - cx) / (rect.width / 2) * 12 })
   }, [])
 
   return (
@@ -105,396 +113,212 @@ function TiltCard() {
       ref={cardRef}
       onMouseMove={handleMouseMove}
       onMouseEnter={() => setHovered(true)}
-      onMouseLeave={handleMouseLeave}
-      style={{
-        perspective: 1000,
-        width: '100%',
-        maxWidth: 320,
-        cursor: 'default',
-        position: 'relative',
-        zIndex: 2,
-      }}
+      onMouseLeave={() => { setTilt({ x: 0, y: 0 }); setHovered(false) }}
+      style={{ perspective: 1000, width: '100%', maxWidth: 320, position: 'relative', zIndex: 2 }}
     >
-      {/* Main 3D card */}
       <motion.div
-        animate={{
-          rotateX: tilt.x,
-          rotateY: tilt.y,
-          scale: hovered ? 1.03 : 1,
-        }}
+        animate={{ rotateX: tilt.x, rotateY: tilt.y, scale: hovered ? 1.03 : 1 }}
         transition={{ type: 'spring', stiffness: 200, damping: 20 }}
         style={{
-          transformStyle: 'preserve-3d',
-          borderRadius: 24,
-          background: 'linear-gradient(145deg, #111827, #0a0d12)',
-          border: '1px solid rgba(163,230,53,0.15)',
-          boxShadow: hovered
-            ? '0 40px 80px rgba(0,0,0,0.7), 0 0 60px rgba(163,230,53,0.08)'
-            : '0 24px 60px rgba(0,0,0,0.6)',
-          padding: 20,
-          position: 'relative',
-          overflow: 'hidden',
+          transformStyle: 'preserve-3d', borderRadius: 24,
+          background: 'linear-gradient(145deg, var(--bg-secondary), var(--bg-tertiary))',
+          border: '1px solid var(--accent-border)',
+          boxShadow: hovered ? `var(--shadow-lg), 0 0 60px var(--accent-glow)` : 'var(--shadow-lg)',
+          padding: 20, position: 'relative', overflow: 'hidden',
         }}
       >
-        {/* Inner glow on hover */}
+        {/* Inner glow */}
         <div style={{
           position: 'absolute', inset: 0, borderRadius: 24, pointerEvents: 'none',
-          background: hovered ? 'radial-gradient(ellipse at 30% 30%, rgba(163,230,53,0.05), transparent 70%)' : 'none',
+          background: hovered ? 'radial-gradient(ellipse at 30% 30%, var(--accent-glow), transparent 70%)' : 'none',
           transition: 'background 0.4s',
         }} />
 
-        {/* Video thumbnail layer — translateZ gives depth */}
-        <motion.div
-          style={{ transform: 'translateZ(30px)', marginBottom: 14 }}
-        >
+        {/* Video thumbnail mock */}
+        <motion.div style={{ transform: 'translateZ(30px)', marginBottom: 14 }}>
           <div style={{
             borderRadius: 14,
-            background: 'linear-gradient(135deg, rgba(163,230,53,0.1), rgba(163,230,53,0.03))',
-            border: '1px solid rgba(163,230,53,0.15)',
-            padding: '12px 14px',
-            display: 'flex', alignItems: 'center', gap: 12,
+            background: 'var(--accent-soft)', border: '1px solid var(--accent-border)',
+            padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 12,
           }}>
             <div style={{
               width: 44, height: 44, borderRadius: 12,
-              background: 'rgba(163,230,53,0.12)',
-              border: '1px solid rgba(163,230,53,0.25)',
+              background: 'var(--accent-soft)', border: '1px solid var(--accent-border)',
               display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
             }}>
-              <span style={{ fontSize: 18, marginLeft: 3 }}>▶</span>
+              <span style={{ fontSize: 18, marginLeft: 3, color: 'var(--accent-text)' }}>▶</span>
             </div>
             <div style={{ flex: 1 }}>
-              <div style={{ height: 8, background: 'rgba(255,255,255,0.15)', borderRadius: 4, marginBottom: 6, width: '78%' }} />
-              <div style={{ height: 6, background: 'rgba(255,255,255,0.07)', borderRadius: 4, width: '52%' }} />
+              <div style={{ height: 8, background: 'var(--text-faint)', borderRadius: 4, marginBottom: 6, width: '78%' }} />
+              <div style={{ height: 6, background: 'var(--text-faint)', borderRadius: 4, width: '52%', opacity: 0.5 }} />
             </div>
           </div>
         </motion.div>
 
         {/* Comments label */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-          <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.05)' }} />
-          <span style={{ fontSize: 9, color: 'rgba(255,255,255,0.2)', letterSpacing: '0.14em', textTransform: 'uppercase' }}>
-            1,240 Comments
-          </span>
-          <div style={{ flex: 1, height: 1, background: 'rgba(255,255,255,0.05)' }} />
+          <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
+          <span style={{ fontSize: 9, color: 'var(--text-muted)', letterSpacing: '0.14em', textTransform: 'uppercase' }}>1,240 Comments</span>
+          <div style={{ flex: 1, height: 1, background: 'var(--border)' }} />
         </div>
 
-        {/* Comment rows — translateZ for depth layers */}
+        {/* Comment rows */}
         {[
           { w: 85, highlight: false, z: 10 },
           { w: 70, highlight: false, z: 8 },
-          { w: 90, highlight: true,  z: 20 },
+          { w: 90, highlight: true, z: 20 },
           { w: 65, highlight: false, z: 6 },
           { w: 75, highlight: false, z: 4 },
         ].map((row, i) => (
-          <motion.div
-            key={i}
-            style={{ transform: `translateZ(${row.z}px)`, marginBottom: 6 }}
-          >
+          <motion.div key={i} style={{ transform: `translateZ(${row.z}px)`, marginBottom: 6 }}>
             <div style={{
               display: 'flex', alignItems: 'center', gap: 8,
-              background: row.highlight ? 'rgba(163,230,53,0.06)' : 'rgba(255,255,255,0.02)',
-              border: `1px solid ${row.highlight ? 'rgba(163,230,53,0.18)' : 'rgba(255,255,255,0.04)'}`,
+              background: row.highlight ? 'var(--accent-soft)' : 'var(--bg-card)',
+              border: `1px solid ${row.highlight ? 'var(--accent-border)' : 'var(--border)'}`,
               borderRadius: 10, padding: '7px 10px',
             }}>
-              <div style={{
-                width: 22, height: 22, borderRadius: '50%', flexShrink: 0,
-                background: row.highlight ? 'rgba(163,230,53,0.18)' : 'rgba(255,255,255,0.06)',
-              }} />
+              <div style={{ width: 22, height: 22, borderRadius: '50%', flexShrink: 0, background: row.highlight ? 'var(--accent-soft)' : 'var(--bg-card-hover)' }} />
               <div style={{ flex: 1 }}>
-                <div style={{
-                  height: 5, borderRadius: 3,
-                  background: row.highlight ? 'rgba(163,230,53,0.25)' : 'rgba(255,255,255,0.08)',
-                  width: `${row.w}%`,
-                }} />
+                <div style={{ height: 5, borderRadius: 3, background: row.highlight ? 'var(--accent-border)' : 'var(--text-faint)', width: `${row.w}%` }} />
               </div>
-              {row.highlight && (
-                <span style={{ fontSize: 10, color: '#a3e635', fontWeight: 700, flexShrink: 0 }}>🏆</span>
-              )}
+              {row.highlight && <span style={{ fontSize: 10, color: 'var(--accent)', fontWeight: 700 }}>🏆</span>}
             </div>
           </motion.div>
         ))}
 
-        {/* Winner badge — highest z-depth, pops out most */}
+        {/* Winner badge */}
         <motion.div
           style={{ transform: 'translateZ(40px)', marginTop: 10 }}
           animate={{ scale: [1, 1.02, 1] }}
           transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
         >
           <div style={{
-            background: 'rgba(163,230,53,0.1)',
-            border: '1px solid rgba(163,230,53,0.28)',
-            borderRadius: 14, padding: '12px 16px', textAlign: 'center',
+            background: 'var(--accent-soft)', border: '1px solid var(--accent-border)',
+            borderRadius: 14, padding: '10px 16px', display: 'flex', alignItems: 'center', gap: 10,
           }}>
-            <div style={{ fontSize: 12, color: '#a3e635', fontWeight: 800, letterSpacing: '0.04em' }}>
-              🏆 Winner Selected!
+            <div style={{ width: 32, height: 32, borderRadius: 10, background: 'var(--accent)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <span style={{ color: '#fff', fontSize: 14, fontWeight: 800 }}>🏆</span>
             </div>
-            <div style={{ fontSize: 15, color: '#fff', fontWeight: 900, marginTop: 4 }}>
-              @channel_winner
+            <div>
+              <p style={{ fontSize: 10, color: 'var(--accent-text)', fontWeight: 700, letterSpacing: '0.1em', textTransform: 'uppercase' }}>Winner Selected!</p>
+              <p style={{ fontSize: 13, fontWeight: 800, color: 'var(--text-primary)' }}>@channel_winner</p>
             </div>
           </div>
         </motion.div>
       </motion.div>
-
-      {/* Bottom glow */}
-      <div style={{
-        position: 'absolute', bottom: -24, left: '50%', transform: 'translateX(-50%)',
-        width: 200, height: 28, borderRadius: '50%',
-        background: 'rgba(163,230,53,0.15)', filter: 'blur(20px)',
-        pointerEvents: 'none',
-      }} />
     </div>
   )
 }
 
-// ─── Floating Comment Badge ───────────────────────────────────────────────────
-function FloatBadge({ user, text, delay, duration, offsetY, style }: {
-  user: string; text: string; delay: number; duration: number; offsetY: number; style?: React.CSSProperties
-}) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={{ opacity: 1, scale: 1, y: [0, offsetY, 0] }}
-      transition={{
-        opacity: { delay: delay + 0.5, duration: 0.6 },
-        scale:   { delay: delay + 0.5, duration: 0.6 },
-        y: { delay: delay + 0.5, duration, repeat: Infinity, ease: 'easeInOut' },
-      }}
-      style={{
-        position: 'absolute',
-        zIndex: 10,
-        ...style,
-      }}
-    >
-      <div style={{
-        background: 'rgba(10,13,18,0.9)',
-        border: '1px solid rgba(163,230,53,0.18)',
-        backdropFilter: 'blur(12px)',
-        borderRadius: 40,
-        padding: '7px 14px',
-        display: 'flex', alignItems: 'center', gap: 8,
-        boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
-        whiteSpace: 'nowrap',
-      }}>
-        <div style={{
-          width: 22, height: 22, borderRadius: '50%',
-          background: 'linear-gradient(135deg, rgba(163,230,53,0.4), rgba(163,230,53,0.1))',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 9, fontWeight: 700, color: '#a3e635', flexShrink: 0,
-        }}>
-          {user[1].toUpperCase()}
-        </div>
-        <div>
-          <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.4)', lineHeight: 1 }}>{user}</div>
-          <div style={{ fontSize: 12, color: '#fff', fontWeight: 600, lineHeight: 1.3 }}>{text}</div>
-        </div>
-      </div>
-    </motion.div>
-  )
-}
-
-// ─── Rotating Text ────────────────────────────────────────────────────────────
-function RotatingText() {
-  const [index, setIndex] = useState(0)
-  useEffect(() => {
-    const timer = setInterval(() => setIndex(i => (i + 1) % ROTATE_WORDS.length), 2800)
-    return () => clearInterval(timer)
-  }, [])
-  return (
-    <span className="rotating-word" style={{ display: 'inline-block', position: 'relative' }}>
-      <AnimatePresence mode="wait">
-        <motion.span
-          key={index}
-          initial={{ opacity: 0, y: 24, filter: 'blur(8px)' }}
-          animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-          exit={{ opacity: 0, y: -20, filter: 'blur(8px)' }}
-          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          style={{
-            display: 'inline-block',
-            color: '#a3e635',
-            position: 'relative',
-          }}
-        >
-          {ROTATE_WORDS[index]}
-        </motion.span>
-      </AnimatePresence>
-    </span>
-  )
-}
-
-// ─── Particle Background ──────────────────────────────────────────────────────
-function Particles() {
-  return (
-    <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', overflow: 'hidden' }}>
-      {PARTICLES.map(p => (
-        <motion.div
-          key={p.id}
-          style={{
-            position: 'absolute',
-            left: `${p.x}%`,
-            top: `${p.y}%`,
-            width: p.size,
-            height: p.size,
-            borderRadius: '50%',
-            background: '#a3e635',
-            opacity: p.opacity,
-          }}
-          animate={{ opacity: [p.opacity, p.opacity * 0.2, p.opacity], y: [-4, 4, -4] }}
-          transition={{ duration: p.duration, delay: p.delay, repeat: Infinity, ease: 'easeInOut' }}
-        />
-      ))}
-    </div>
-  )
-}
-
-// ─── Main Hero ────────────────────────────────────────────────────────────────
+// ─── Main Hero ───────────────────────────────────────────────────────────────
 export default function Hero({ videoUrl, setVideoUrl, loading, onLoad }: HeroProps) {
-  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === 'Enter' && !loading && videoUrl.trim()) onLoad()
-  }
+  const [wordIdx, setWordIdx] = useState(0)
+
+  useState(() => {
+    const interval = setInterval(() => setWordIdx(p => (p + 1) % ROTATE_WORDS.length), 3000)
+    return () => clearInterval(interval)
+  })
 
   return (
-    <section style={{ position: 'relative', background: '#0B0F19', overflow: 'hidden', paddingBottom: 0 }}>
-
-      {/* ── TICKER (full width, outside ad columns) ──────────────────────── */}
-      <Ticker />
-
-      {/* ── Background effects ─────────────────────────────────────── */}
-      {/* Dot grid */}
-      <div style={{
-        position: 'absolute', inset: 0, pointerEvents: 'none',
-        backgroundImage: 'radial-gradient(circle, rgba(163,230,53,0.12) 1px, transparent 1px)',
-        backgroundSize: '36px 36px',
-        maskImage: 'radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%)',
-        WebkitMaskImage: 'radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%)',
-      }} />
-
-      {/* Large lime glow orb — left */}
-      <div style={{
-        position: 'absolute', top: '-10%', left: '-10%', pointerEvents: 'none',
-        width: 500, height: 500, borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(163,230,53,0.07) 0%, transparent 70%)',
-        filter: 'blur(40px)',
-      }} />
-
-      {/* Large lime glow orb — right */}
-      <div style={{
-        position: 'absolute', top: '20%', right: '-15%', pointerEvents: 'none',
-        width: 400, height: 400, borderRadius: '50%',
-        background: 'radial-gradient(circle, rgba(163,230,53,0.05) 0%, transparent 70%)',
-        filter: 'blur(60px)',
-      }} />
+    <section style={{ position: 'relative', overflow: 'hidden' }}>
+      {/* BG gradient */}
+      <div style={{ position: 'absolute', inset: 0, background: 'var(--gradient-hero)', pointerEvents: 'none', zIndex: 0 }} />
 
       {/* Particles */}
-      <Particles />
-
-      {/* ── Main hero content ──────────────────────────────────────── */}
-      <div style={{
-        position: 'relative', zIndex: 2,
-        maxWidth: 1200, margin: '0 auto',
-        padding: '80px 32px 60px',
-        display: 'grid',
-        gridTemplateColumns: '1fr 1fr',
-        gap: 60,
-        alignItems: 'center',
-      }}
-        className="hero-grid"
-      >
-
-        {/* LEFT — Text content */}
-        <div>
-          {/* Badge */}
+      <div style={{ position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none', overflow: 'hidden' }}>
+        {PARTICLES.map(p => (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 28 }}
-          >
-            <div style={{
+            key={p.id}
+            animate={{ y: [0, -30, 0], opacity: [p.opacity, p.opacity * 2, p.opacity] }}
+            transition={{ duration: p.duration, delay: p.delay, repeat: Infinity, ease: 'easeInOut' }}
+            style={{
+              position: 'absolute', left: `${p.x}%`, top: `${p.y}%`,
+              width: p.size, height: p.size, borderRadius: '50%', background: 'var(--accent)',
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Ticker */}
+      <Ticker />
+
+      {/* Hero Content */}
+      <div
+        className="hero-grid"
+        style={{
+          position: 'relative', zIndex: 2,
+          maxWidth: 1280, margin: '0 auto',
+          display: 'grid', gridTemplateColumns: '1.1fr 0.9fr', gap: 64, alignItems: 'center',
+          padding: '80px 40px 60px',
+        }}
+      >
+        {/* LEFT — Copy */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 28 }}>
+          {/* Badge */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+            <span style={{
               display: 'inline-flex', alignItems: 'center', gap: 8,
-              border: '1px solid rgba(163,230,53,0.2)',
-              background: 'rgba(163,230,53,0.05)',
-              borderRadius: 40, padding: '7px 16px',
+              background: 'var(--accent-soft)', border: '1px solid var(--accent-border)',
+              borderRadius: 30, padding: '6px 16px', fontSize: 12, fontWeight: 600, color: 'var(--accent-text)',
             }}>
-              <span style={{
-                width: 7, height: 7, borderRadius: '50%',
-                background: '#a3e635',
-                boxShadow: '0 0 8px rgba(163,230,53,0.8)',
-                display: 'inline-block',
-                animation: 'pulse-dot 2s ease-in-out infinite',
-              }} />
-              <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.7)', fontWeight: 500 }}>
-                Free · No signup · 10,000+ giveaways picked
-              </span>
-            </div>
+              <span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--accent)' }} />
+              Free · No signup · 10,000+ giveaways picked
+            </span>
           </motion.div>
 
           {/* Headline */}
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            style={{
-              fontSize: 'clamp(38px, 5vw, 68px)',
-              fontWeight: 900,
-              lineHeight: 1.06,
-              letterSpacing: '-2px',
-              color: '#fff',
-              marginBottom: 24,
-            }}
-          >
-            Pick Giveaway<br />
-            Winners from<br />
-            <RotatingText />
-          </motion.h1>
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.15 }}>
+            <h1 style={{ fontSize: 'clamp(38px, 5.5vw, 64px)', fontWeight: 900, lineHeight: 1.05, letterSpacing: '-2px', color: 'var(--text-primary)' }}>
+              Pick Giveaway{' '}
+              <span style={{ color: 'var(--accent)', position: 'relative' }}>
+                Winners
+                <svg style={{ position: 'absolute', bottom: -4, left: 0, width: '100%', height: 8 }} viewBox="0 0 200 8" preserveAspectRatio="none">
+                  <path d="M0 6 Q50 0 100 4 T200 3" fill="none" stroke="var(--accent)" strokeWidth="2.5" strokeLinecap="round" opacity="0.4" />
+                </svg>
+              </span>{' '}
+              from{' '}
+              <span className="rotating-word" style={{ display: 'inline-block', minWidth: 300 }}>
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={wordIdx}
+                    initial={{ y: 24, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    exit={{ y: -24, opacity: 0 }}
+                    transition={{ duration: 0.35 }}
+                    style={{ display: 'inline-block', color: 'var(--text-primary)' }}
+                  >
+                    {ROTATE_WORDS[wordIdx]}
+                  </motion.span>
+                </AnimatePresence>
+              </span>
+            </h1>
+          </motion.div>
 
-          {/* Subtitle */}
+          {/* Subheading */}
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.35 }}
-            style={{
-              fontSize: 17, color: 'rgba(255,255,255,0.45)',
-              lineHeight: 1.7, marginBottom: 40, maxWidth: 460,
-            }}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.35, duration: 0.6 }}
+            style={{ fontSize: 17, color: 'var(--text-secondary)', lineHeight: 1.7, maxWidth: 500 }}
           >
-            Load comments from any YouTube video or Short,
-            apply filters and randomly select verified winners in seconds.
+            Load comments from any YouTube video or Short, apply filters and randomly select verified winners in seconds.
           </motion.p>
 
-          {/* URL Input */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.5 }}
-            style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 36 }}
-          >
-            <div className="hero-input-row" style={{ display: 'flex', gap: 10 }}>
+          {/* Input */}
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45, duration: 0.6 }}>
+            <div className="hero-input-row" style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
               <input
-                type="url"
-                inputMode="url"
-                autoComplete="off"
-                autoCorrect="off"
-                autoCapitalize="off"
-                spellCheck={false}
-                placeholder="Paste YouTube video or Shorts URL..."
+                type="url" inputMode="url" autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
+                placeholder="Paste YouTube or Shorts URL..."
                 value={videoUrl}
                 onChange={e => setVideoUrl(e.target.value)}
-                onKeyDown={handleKeyDown}
+                onKeyDown={e => { if (e.key === 'Enter' && !loading) onLoad() }}
                 style={{
-                  flex: 1,
-                  height: 54,
-                  borderRadius: 16,
-                  background: 'rgba(255,255,255,0.04)',
-                  border: '1px solid rgba(255,255,255,0.12)',
-                  padding: '0 20px',
-                  fontSize: 15,
-                  color: '#fff',
-                  outline: 'none',
+                  flex: 1, height: 54, borderRadius: 16, fontSize: 15,
+                  background: 'var(--bg-card)', border: '1px solid var(--border)',
+                  color: 'var(--text-primary)', padding: '0 20px', outline: 'none',
                   transition: 'border-color 0.2s',
-                  minWidth: 0,
                 }}
-                onFocus={e => (e.target.style.borderColor = 'rgba(163,230,53,0.5)')}
-                onBlur={e => (e.target.style.borderColor = 'rgba(255,255,255,0.12)')}
+                onFocus={e => (e.target.style.borderColor = 'var(--accent)')}
+                onBlur={e => (e.target.style.borderColor = 'var(--border)')}
               />
               <motion.button
                 onClick={onLoad}
@@ -503,52 +327,37 @@ export default function Hero({ videoUrl, setVideoUrl, loading, onLoad }: HeroPro
                 whileTap={{ scale: 0.97 }}
                 style={{
                   height: 54, padding: '0 28px', borderRadius: 16,
-                  background: '#a3e635', color: '#000',
-                  fontWeight: 900, fontSize: 15,
-                  border: 'none', cursor: loading || !videoUrl.trim() ? 'not-allowed' : 'pointer',
+                  background: 'var(--accent)', color: '#fff',
+                  fontWeight: 800, fontSize: 15, border: 'none',
+                  cursor: loading || !videoUrl.trim() ? 'not-allowed' : 'pointer',
                   opacity: loading || !videoUrl.trim() ? 0.6 : 1,
-                  display: 'flex', alignItems: 'center', gap: 8,
-                  flexShrink: 0, transition: 'opacity 0.2s',
+                  display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0,
+                  boxShadow: 'var(--shadow-accent)', transition: 'opacity 0.2s',
                 }}
               >
                 {loading ? (
                   <>
-                    <motion.span
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
-                      style={{ display: 'inline-block', fontSize: 16 }}
-                    >
-                      ⟳
-                    </motion.span>
+                    <motion.span animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }} style={{ display: 'inline-block', fontSize: 16 }}>⟳</motion.span>
                     Loading...
                   </>
-                ) : (
-                  <>Load Comments</>
-                )}
+                ) : 'Load Comments'}
               </motion.button>
             </div>
-
-            {/* Supported URLs hint */}
-            <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.25)', paddingLeft: 4 }}>
+            <p style={{ fontSize: 12, color: 'var(--text-muted)', paddingLeft: 4, marginTop: 8 }}>
               Supports youtube.com/watch · youtube.com/shorts · youtu.be
             </p>
           </motion.div>
 
-          {/* Trust stats row */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.7, duration: 0.6 }}
-            style={{ display: 'flex', gap: 28, flexWrap: 'wrap' }}
-          >
+          {/* Stats */}
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7, duration: 0.6 }} style={{ display: 'flex', gap: 28, flexWrap: 'wrap' }}>
             {[
               { num: '10K+', label: 'Giveaways' },
               { num: '500K+', label: 'Comments Loaded' },
               { num: '100%', label: 'Free Forever' },
             ].map((s, i) => (
               <div key={i} style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
-                <span style={{ fontSize: 18, fontWeight: 900, color: '#a3e635' }}>{s.num}</span>
-                <span style={{ fontSize: 12, color: 'rgba(255,255,255,0.3)' }}>{s.label}</span>
+                <span style={{ fontSize: 18, fontWeight: 900, color: 'var(--accent)' }}>{s.num}</span>
+                <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>{s.label}</span>
               </div>
             ))}
           </motion.div>
@@ -556,162 +365,60 @@ export default function Hero({ videoUrl, setVideoUrl, loading, onLoad }: HeroPro
 
         {/* RIGHT — 3D Visual */}
         <motion.div
-          initial={{ opacity: 0, x: 40 }}
-          animate={{ opacity: 1, x: 0 }}
+          initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
           className="hero-visual-wrap"
-style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 460 }}
+          style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 460 }}
         >
-          {/* Floating comment badges around the card */}
-          <FloatBadge
-            user="@creator_fan" text="giveaway! 🎉"
-            delay={0.6} duration={6} offsetY={-14}
-            style={{ top: '5%', left: '-8%' }}
-          />
-          <FloatBadge
-            user="@yt_subscriber" text="#giveaway 🔥"
-            delay={1.8} duration={7} offsetY={-10}
-            style={{ bottom: '18%', left: '-12%' }}
-          />
-          <FloatBadge
-            user="@loyal_viewer" text="Pick me! 🏆"
-            delay={1.2} duration={5.5} offsetY={-12}
-            style={{ top: '10%', right: '-10%' }}
-          />
-          <FloatBadge
-            user="@shorts_fan" text="love this ❤️"
-            delay={2.5} duration={6.5} offsetY={-16}
-            style={{ bottom: '22%', right: '-8%' }}
-          />
-
-          {/* 3D Tilt Card */}
+          <FloatBadge user="@creator_fan" text="giveaway! 🎉" delay={0.6} duration={6} offsetY={-14} style={{ top: '5%', left: '-8%' }} />
+          <FloatBadge user="@yt_subscriber" text="#giveaway 🔥" delay={1.8} duration={7} offsetY={-10} style={{ bottom: '18%', left: '-12%' }} />
+          <FloatBadge user="@loyal_viewer" text="Pick me! 🏆" delay={1.2} duration={5.5} offsetY={-12} style={{ top: '10%', right: '-10%' }} />
+          <FloatBadge user="@shorts_fan" text="love this ❤️" delay={2.5} duration={6.5} offsetY={-16} style={{ bottom: '22%', right: '-8%' }} />
           <TiltCard />
 
-          {/* Floating YouTube badge — top center */}
+          {/* YT badge */}
           <motion.div
-  className="floating-badge"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1, duration: 0.6 }}
-            style={{
-              position: 'absolute', top: -18, left: '50%',
-              transform: 'translateX(-50%)',
-              zIndex: 20,
-            }}
+            className="floating-badge"
+            initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1, duration: 0.6 }}
+            style={{ position: 'absolute', top: -18, left: '50%', transform: 'translateX(-50%)', zIndex: 20 }}
           >
             <motion.div
               animate={{ y: [0, -6, 0] }}
               transition={{ duration: 3, repeat: Infinity, ease: 'easeInOut' }}
               style={{
-                background: 'rgba(10,13,18,0.95)',
-                border: '1px solid rgba(163,230,53,0.25)',
-                borderRadius: 40, padding: '6px 16px',
+                background: 'color-mix(in srgb, var(--bg-primary) 95%, transparent)',
+                border: '1px solid var(--accent-border)', borderRadius: 40, padding: '6px 16px',
                 display: 'flex', alignItems: 'center', gap: 8,
-                backdropFilter: 'blur(12px)',
-                boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
-                whiteSpace: 'nowrap',
+                backdropFilter: 'blur(12px)', boxShadow: 'var(--shadow-card)', whiteSpace: 'nowrap',
               }}
             >
-              <div style={{
-                width: 22, height: 22, borderRadius: 6,
-                background: '#FF0000',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                flexShrink: 0,
-              }}>
+              <div style={{ width: 22, height: 22, borderRadius: 6, background: '#FF0000', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 <span style={{ color: '#fff', fontSize: 10, marginLeft: 2 }}>▶</span>
               </div>
-              <span style={{ fontSize: 12, color: '#fff', fontWeight: 700 }}>YouTube Giveaway Picker</span>
+              <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-primary)' }}>YouTube Giveaway Picker</span>
             </motion.div>
           </motion.div>
-
         </motion.div>
       </div>
 
-      {/* ── AD SLOT — horizontal banner below hero content ──────────── */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1, duration: 0.6 }}
-        style={{
-          position: 'relative', zIndex: 2,
-          maxWidth: 900, margin: '0 auto',
-          padding: '0 32px 40px',
-        }}
-      >
-        <div style={{
-          width: '100%', height: 90, borderRadius: 14,
-          background: 'rgba(163,230,53,0.02)',
-          border: '1px dashed rgba(163,230,53,0.1)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-        }}>
-          <span style={{
-            fontSize: 9, letterSpacing: '0.18em', textTransform: 'uppercase',
-            color: 'rgba(163,230,53,0.18)',
-          }}>
-            Advertisement · 728×90
-          </span>
-        </div>
-      </motion.div>
+      {/* Bottom gradient fade */}
+      <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 40, background: 'linear-gradient(transparent, var(--bg-primary))', pointerEvents: 'none', zIndex: 3 }} />
 
-      {/* ── Bottom gradient fade into next section ─────────────────── */}
-      <div style={{
-        position: 'absolute', bottom: 0, left: 0, right: 0, height: 40,
-        background: 'linear-gradient(transparent, #0B0F19)',
-        pointerEvents: 'none', zIndex: 3,
-      }} />
-
-      {/* ── Pulse dot keyframes ────────────────────────────────────── */}
       <style>{`
-        @keyframes pulse-dot {
-          0%, 100% { opacity: 1; transform: scale(1); }
-          50% { opacity: 0.5; transform: scale(1.3); }
+        .rotating-word { min-width: 300px; }
+        @media (max-width: 1024px) {
+          .hero-grid { grid-template-columns: 1fr !important; gap: 36px !important; padding: 64px 20px 44px !important; }
+          .hero-visual-wrap { min-height: 420px !important; overflow: hidden !important; }
+          .floating-badge { display: none !important; }
         }
-        .rotating-word {
-  min-width: 320px;
-}
-
-@media (max-width: 1024px) {
-  .hero-grid {
-    grid-template-columns: 1fr !important;
-    gap: 36px !important;
-    padding: 64px 20px 44px !important;
-  }
-
-  .hero-visual-wrap {
-    min-height: 420px !important;
-    overflow: hidden !important;
-  }
-
-  .floating-badge {
-    display: none !important;
-  }
-}
-
-@media (max-width: 640px) {
-  .hero-grid {
-    padding: 48px 16px 32px !important;
-  }
-
-  .hero-input-row {
-    flex-direction: column !important;
-  }
-
-  .hero-input-row button {
-    width: 100% !important;
-    justify-content: center !important;
-  }
-
-  .rotating-word {
-    min-width: 0 !important;
-    max-width: 100% !important;
-  }
-
-  .hero-visual-wrap {
-    min-height: 360px !important;
-          }
+        @media (max-width: 640px) {
+          .hero-grid { padding: 48px 16px 32px !important; }
+          .hero-input-row { flex-direction: column !important; }
+          .hero-input-row button { width: 100% !important; justify-content: center !important; }
+          .rotating-word { min-width: 0 !important; max-width: 100% !important; }
+          .hero-visual-wrap { min-height: 360px !important; }
         }
       `}</style>
-
     </section>
   )
 }

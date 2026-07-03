@@ -1,19 +1,21 @@
 type Props = {
-  label?: string;
-};
+  label?: string
+  format?: 'horizontal' | 'square'
+}
 
-export default function AdSlot({ label = "Advertisement" }: Props) {
+export default function AdSlot({ label = 'Advertisement', format = 'horizontal' }: Props) {
   return (
     <div className="max-w-5xl mx-auto px-6 my-10">
-      <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-4 text-center">
-        <p className="text-xs uppercase tracking-[0.2em] text-zinc-600 mb-3">
+      <div className="ad-container" style={{ minHeight: format === 'square' ? 250 : 90, borderRadius: 20 }}>
+        <ins className="adsbygoogle" style={{ display: 'block' }}
+          data-ad-client="ca-pub-XXXXXXX"
+          data-ad-slot="INCONTENT_SLOT"
+          data-ad-format="auto"
+          data-full-width-responsive="true" />
+        <span style={{ fontSize: 9, letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--text-faint)' }}>
           {label}
-        </p>
-
-        <div className="h-28 rounded-2xl border border-dashed border-white/10 bg-black/20 flex items-center justify-center text-zinc-600 text-sm">
-          AdSense placement
-        </div>
+        </span>
       </div>
     </div>
-  );
+  )
 }

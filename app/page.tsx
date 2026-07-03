@@ -12,10 +12,7 @@ import HistorySection from "../components/HistorySection";
 import LoadingScreen from "../components/LoadingScreen";
 import HomepageMarketingSections from "@/components/HomepageMarketingSections";
 
-import {
-  filterComments,
-  pickRandomWinners,
-} from "../lib/winner";
+import { filterComments, pickRandomWinners } from "../lib/winner";
 
 export default function HomePage() {
   const [videoUrl, setVideoUrl] = useState("");
@@ -38,81 +35,49 @@ export default function HomePage() {
   const validEntries = useMemo(() => {
     if (!videoData?.comments?.length) return [];
     return filterComments({
-      comments: videoData.comments,
-      keyword,
-      removeDuplicates,
-      emoji,
-      timeWindowMinutes,
-      videoPublishedAt: videoData.meta.publishedAt,
+      comments: videoData.comments, keyword, removeDuplicates, emoji,
+      timeWindowMinutes, videoPublishedAt: videoData.meta.publishedAt,
     });
   }, [videoData, keyword, removeDuplicates, emoji, timeWindowMinutes]);
 
   async function loadHistory(videoId: string) {
     try {
-      const res = await fetch("/api/history", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ videoId }),
-      });
+      const res = await fetch("/api/history", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ videoId }) });
       const json = await res.json();
       if (res.ok) setHistory(json.draws || []);
-    } catch (error) {
-      console.error(error);
-    }
+    } catch (e) { console.error(e) }
   }
 
   async function handleLoadComments() {
     try {
-      setLoading(true);
-      setWinners([]);
-
-      const res = await fetch("/api/comments", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ videoUrl }),
-      });
-
+      setLoading(true); setWinners([]);
+      const res = await fetch("/api/comments", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ videoUrl }) });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Failed to load comments.");
-
       setVideoData(json);
       await loadHistory(json.videoId);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
+    } catch (e) { console.error(e) } finally { setLoading(false) }
   }
 
   function handlePickWinner() {
     if (!validEntries.length) return;
-
-    setWinners([]);
-    setRevealing(true);
-
+    setWinners([]); setRevealing(true);
     let ticks = 0;
     const interval = setInterval(() => {
       const random = validEntries[Math.floor(Math.random() * validEntries.length)];
       setRevealName(random.authorName);
       ticks++;
-
       if (ticks >= 25) {
         clearInterval(interval);
         const selected = pickRandomWinners(validEntries, winnersCount);
-
         setTimeout(async () => {
-          setWinners(selected);
-          setRevealing(false);
-
+          setWinners(selected); setRevealing(false);
           try {
             const saveRes = await fetch("/api/save-draw", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
+              method: "POST", headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
-                videoId: videoData.meta.videoId,
-                videoTitle: videoData.meta.title,
-                thumbnailUrl: videoData.meta.thumbnailUrl,
-                winners: selected,
+                videoId: videoData.meta.videoId, videoTitle: videoData.meta.title,
+                thumbnailUrl: videoData.meta.thumbnailUrl, winners: selected,
                 validEntries: validEntries.length,
                 settings: { keyword, emoji, timeWindowMinutes, removeDuplicates, winnersCount },
               }),
@@ -120,63 +85,39 @@ export default function HomePage() {
             const saveJson = await saveRes.json();
             if (saveRes.ok) setVerificationId(saveJson.verificationId);
             await loadHistory(videoData.meta.videoId);
-          } catch (error) {
-            console.error(error);
-          }
+          } catch (e) { console.error(e) }
         }, 600);
       }
     }, 80);
   }
 
   return (
-    <main className="min-h-screen bg-[#0B0F19] text-white">
-
-      {/* ── Hero with integrated URL input & ad slot ── */}
+    <main className="min-h-screen" style={{ background: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
       <div id="tool" />
-      <Hero
-        videoUrl={videoUrl}
-        setVideoUrl={setVideoUrl}
-        loading={loading}
-        onLoad={handleLoadComments}
-      />
+      <Hero videoUrl={videoUrl} setVideoUrl={setVideoUrl} loading={loading} onLoad={handleLoadComments} />
 
-      {/* ── Tool results (only shown after comments load) ── */}
       {loading && <LoadingScreen />}
 
       {videoData && (
         <>
-          <VideoInfo
-            title={videoData.meta.title}
-            channelTitle={videoData.meta.channelTitle}
-            thumbnailUrl={videoData.meta.thumbnailUrl}
-            totalComments={videoData.totalComments}
-          />
+          <VideoInfo title={videoData.meta.title} channelTitle={videoData.meta.channelTitle}
+            thumbnailUrl={videoData.meta.thumbnailUrl} totalComments={videoData.totalComments} />
 
           <WinnerSettings
-            keyword={keyword}
-            setKeyword={setKeyword}
-            emoji={emoji}
-            setEmoji={setEmoji}
-            winnersCount={winnersCount}
-            setWinnersCount={setWinnersCount}
-            customWinnersCount={customWinnersCount}
-            setCustomWinnersCount={setCustomWinnersCount}
-            removeDuplicates={removeDuplicates}
-            setRemoveDuplicates={setRemoveDuplicates}
-            showEmojiPicker={showEmojiPicker}
-            setShowEmojiPicker={setShowEmojiPicker}
-            timeWindowMinutes={timeWindowMinutes}
-            setTimeWindowMinutes={setTimeWindowMinutes}
-            customMinutes={customMinutes}
-            setCustomMinutes={setCustomMinutes}
+            keyword={keyword} setKeyword={setKeyword} emoji={emoji} setEmoji={setEmoji}
+            winnersCount={winnersCount} setWinnersCount={setWinnersCount}
+            customWinnersCount={customWinnersCount} setCustomWinnersCount={setCustomWinnersCount}
+            removeDuplicates={removeDuplicates} setRemoveDuplicates={setRemoveDuplicates}
+            showEmojiPicker={showEmojiPicker} setShowEmojiPicker={setShowEmojiPicker}
+            timeWindowMinutes={timeWindowMinutes} setTimeWindowMinutes={setTimeWindowMinutes}
+            customMinutes={customMinutes} setCustomMinutes={setCustomMinutes}
             validEntriesCount={validEntries.length}
           />
 
           <section className="max-w-5xl mx-auto px-6 mt-6">
-            <button
-              onClick={handlePickWinner}
-              className="w-full h-14 rounded-2xl bg-lime-400 text-black font-bold hover:scale-[1.01] transition"
-            >
+            <button onClick={handlePickWinner}
+              className="w-full h-14 rounded-2xl font-bold hover:scale-[1.01] transition"
+              style={{ background: 'var(--accent)', color: 'var(--accent-on)', boxShadow: 'var(--shadow-accent)' }}>
               Pick Winner
             </button>
           </section>
@@ -188,7 +129,6 @@ export default function HomePage() {
         </>
       )}
 
-      {/* ── Marketing sections + sticky ads ── */}
       <HomepageMarketingSections />
     </main>
   );

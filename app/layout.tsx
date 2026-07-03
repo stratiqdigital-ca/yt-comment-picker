@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+import ThemeProvider from "@/components/ThemeProvider";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import ScrollToTop from "@/components/ScrollToTop";
@@ -52,7 +53,7 @@ export const metadata: Metadata = {
     images: ["/og-image.jpg"],
   },
 
-   icons: {
+  icons: {
     icon: '/icon.svg',
     shortcut: '/icon.svg',
     apple: '/icon.svg',
@@ -61,13 +62,44 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className="bg-[#0B0F19] text-white">
-        <SiteHeader />
-        <Toaster position="top-center" />
-        {children}
-        <SiteFooter />
-        <ScrollToTop />
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* AdSense — replace ca-pub-XXXXXXX with your publisher ID once approved */}
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXX"
+          crossOrigin="anonymous"
+        />
+        {/* Prevent flash of wrong theme */}
+        <script dangerouslySetInnerHTML={{ __html: `
+          (function(){
+            try {
+              var t = localStorage.getItem('theme');
+              if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t);
+              else if (window.matchMedia('(prefers-color-scheme: light)').matches) document.documentElement.setAttribute('data-theme', 'light');
+              else document.documentElement.setAttribute('data-theme', 'dark');
+            } catch(e){}
+          })()
+        `}} />
+      </head>
+      <body>
+        <ThemeProvider>
+          <SiteHeader />
+          <Toaster
+            position="top-center"
+            toastOptions={{
+              style: {
+                background: 'var(--bg-secondary)',
+                color: 'var(--text-primary)',
+                border: '1px solid var(--border)',
+                borderRadius: '14px',
+              },
+            }}
+          />
+          {children}
+          <SiteFooter />
+          <ScrollToTop />
+        </ThemeProvider>
       </body>
     </html>
   )
