@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
+import toast from "react-hot-toast";
 
 import Hero from "../components/Hero";
 import VideoInfo from "../components/VideoInfo";
@@ -32,8 +33,10 @@ export default function HomePage() {
   const [emoji, setEmoji] = useState("");
   const [verificationId, setVerificationId] = useState("");
   const [history, setHistory] = useState<any[]>([]);
-  // Controls whether the pick-winner flow (filters + pick button) is visible
   const [showPickerFlow, setShowPickerFlow] = useState(false);
+  // Track save errors so WinnerCards can show retry
+  const [saveError, setSaveError] = useState("");
+  const [saving, setSaving] = useState(false);
 
   const validEntries = useMemo(() => {
     if (!videoData?.comments?.length) return [];
@@ -43,33 +46,81 @@ export default function HomePage() {
     });
   }, [videoData, keyword, removeDuplicates, emoji, timeWindowMinutes]);
 
-  // The most recent draw's verification ID (from history)
   const latestVerificationId = history.length > 0 ? history[0]?.verification_id : null;
-  // Whether this video already has previous winners
   const hasExistingWinners = history.length > 0;
 
   async function loadHistory(videoId: string) {
     try {
       const res = await fetch("/api/history", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ videoId }) });
       const json = await res.json();
-      if (res.ok) setHistory(json.draws || []);
-    } catch (e) { console.error(e) }
+      if (res.ok) {
+        setHistory(json.draws || []);
+      } else {
+        console.error("History load error:", json.error);
+      }
+    } catch (e) {
+      console.error("History fetch failed:", e);
+    }
   }
 
   async function handleLoadComments() {
     try {
-      setLoading(true); setWinners([]); setShowPickerFlow(false);
+      setLoading(true); setWinners([]); setShowPickerFlow(false); setVerificationId(""); setSaveError("");
       const res = await fetch("/api/comments", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ videoUrl }) });
       const json = await res.json();
-      if (!res.ok) throw new Error(json.error || "Failed to load comments.");
+      if (!res.ok) {
+        toast.error(json.error || "Failed to load comments.");
+        throw new Error(json.error || "Failed to load comments.");
+      }
       setVideoData(json);
       await loadHistory(json.videoId);
-    } catch (e) { console.error(e) } finally { setLoading(false) }
+    } catch (e: any) {
+      console.error("Load comments error:", e);
+    } finally { setLoading(false) }
+  }
+
+  // Separate save function so it can be retried
+  async function saveDrawResults(selected: any[]) {
+    setSaving(true);
+    setSaveError("");
+    try {
+      const saveRes = await fetch("/api/save-draw", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          videoId: videoData.videoId || videoData.meta?.videoId,
+          videoTitle: videoData.meta.title,
+          thumbnailUrl: videoData.meta.thumbnailUrl,
+          winners: selected,
+          validEntries: validEntries.length,
+          settings: { keyword, emoji, timeWindowMinutes, removeDuplicates, winnersCount },
+        }),
+      });
+      const saveJson = await saveRes.json();
+
+      if (saveRes.ok && saveJson.verificationId) {
+        setVerificationId(saveJson.verificationId);
+        setSaveError("");
+        toast.success("Winners saved! Verification page created.");
+        await loadHistory(videoData.videoId || videoData.meta?.videoId);
+      } else {
+        const errMsg = saveJson.error || "Failed to save results. Please retry.";
+        setSaveError(errMsg);
+        toast.error(errMsg);
+        console.error("Save draw error:", saveJson);
+      }
+    } catch (e: any) {
+      const errMsg = e.message || "Network error saving results.";
+      setSaveError(errMsg);
+      toast.error(errMsg);
+      console.error("Save draw exception:", e);
+    } finally {
+      setSaving(false);
+    }
   }
 
   function handlePickWinner() {
     if (!validEntries.length) return;
-    setWinners([]); setRevealing(true);
+    setWinners([]); setRevealing(true); setVerificationId(""); setSaveError("");
     let ticks = 0;
     const interval = setInterval(() => {
       const random = validEntries[Math.floor(Math.random() * validEntries.length)];
@@ -78,22 +129,11 @@ export default function HomePage() {
       if (ticks >= 25) {
         clearInterval(interval);
         const selected = pickRandomWinners(validEntries, winnersCount);
-        setTimeout(async () => {
-          setWinners(selected); setRevealing(false);
-          try {
-            const saveRes = await fetch("/api/save-draw", {
-              method: "POST", headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                videoId: videoData.meta.videoId, videoTitle: videoData.meta.title,
-                thumbnailUrl: videoData.meta.thumbnailUrl, winners: selected,
-                validEntries: validEntries.length,
-                settings: { keyword, emoji, timeWindowMinutes, removeDuplicates, winnersCount },
-              }),
-            });
-            const saveJson = await saveRes.json();
-            if (saveRes.ok) setVerificationId(saveJson.verificationId);
-            await loadHistory(videoData.meta.videoId);
-          } catch (e) { console.error(e) }
+        setTimeout(() => {
+          setWinners(selected);
+          setRevealing(false);
+          // Save in background
+          saveDrawResults(selected);
         }, 600);
       }
     }, 80);
@@ -111,14 +151,7 @@ export default function HomePage() {
           <VideoInfo title={videoData.meta.title} channelTitle={videoData.meta.channelTitle}
             thumbnailUrl={videoData.meta.thumbnailUrl} totalComments={videoData.totalComments} />
 
-          {/*
-            DECISION POINT:
-            - If video HAS existing winners AND user hasn't clicked "Pick New Winners" → show dual buttons
-            - If video has NO existing winners OR user clicked "Pick New Winners" → show filter/pick flow
-          */}
-
           {hasExistingWinners && !showPickerFlow && winners.length === 0 ? (
-            /* ── Scenario B: Video already has winners — show dual action buttons ── */
             <motion.section
               className="max-w-5xl mx-auto px-6 mt-10"
               initial={{ opacity: 0, y: 20 }}
@@ -140,7 +173,6 @@ export default function HomePage() {
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
-                  {/* Button 1: See Selected Winners → goes to latest verification page */}
                   <a
                     href={`/verify/${latestVerificationId}`}
                     target="_blank"
@@ -148,26 +180,23 @@ export default function HomePage() {
                     style={{ background: 'var(--accent)', color: 'var(--accent-on)', boxShadow: 'var(--shadow-accent)' }}
                   >
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M9 12l2 2 4-4" />
-                      <circle cx="12" cy="12" r="10" />
+                      <path d="M9 12l2 2 4-4" /><circle cx="12" cy="12" r="10" />
                     </svg>
                     See Selected Winners
                   </a>
 
-                  {/* Button 2: Pick New Winners → opens filter/pick flow */}
                   <button
                     onClick={() => setShowPickerFlow(true)}
                     className="w-full sm:w-auto h-14 px-8 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 hover:scale-[1.02] transition"
                     style={{ background: 'var(--bg-tertiary)', border: '2px solid var(--accent-border)', color: 'var(--accent-text)' }}
                   >
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.66 0 3-4.03 3-9s-1.34-9-3-9m0 18c-1.66 0-3-4.03-3-9s1.34-9 3-9" />
+                      <polyline points="1 4 1 10 7 10" /><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
                     </svg>
                     Pick New Winners
                   </button>
                 </div>
 
-                {/* Quick preview of latest winners */}
                 {history[0]?.winners?.length > 0 && (
                   <div className="mt-8 flex flex-wrap items-center justify-center gap-2">
                     <span className="text-sm" style={{ color: 'var(--text-muted)' }}>Latest winners:</span>
@@ -182,7 +211,6 @@ export default function HomePage() {
               </div>
             </motion.section>
           ) : (
-            /* ── Scenario A: No existing winners OR user clicked "Pick New Winners" — show filter/pick flow ── */
             <>
               <WinnerSettings
                 keyword={keyword} setKeyword={setKeyword} emoji={emoji} setEmoji={setEmoji}
@@ -202,7 +230,6 @@ export default function HomePage() {
                   {hasExistingWinners ? 'Pick New Winners' : 'Pick Winner'}
                 </button>
 
-                {/* If user came from "Pick New Winners" flow, show a back option */}
                 {hasExistingWinners && showPickerFlow && winners.length === 0 && (
                   <button
                     onClick={() => setShowPickerFlow(false)}
@@ -216,7 +243,13 @@ export default function HomePage() {
           )}
 
           <WinnerReveal revealing={revealing} revealName={revealName} />
-          <WinnerCards winners={winners} verificationId={verificationId} />
+          <WinnerCards
+            winners={winners}
+            verificationId={verificationId}
+            saveError={saveError}
+            saving={saving}
+            onRetry={() => saveDrawResults(winners)}
+          />
           <HistorySection history={history} />
           <CommentPreview comments={videoData?.comments || []} />
         </>
