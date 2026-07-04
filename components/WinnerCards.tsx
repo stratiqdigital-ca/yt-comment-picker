@@ -1,5 +1,6 @@
 "use client";
 import toast from "react-hot-toast";
+import { motion } from "framer-motion";
 
 type Props = { winners: any[]; verificationId?: string };
 
@@ -20,21 +21,14 @@ export default function WinnerCards({ winners, verificationId }: Props) {
             <h3 className="text-3xl font-black" style={{ color: 'var(--text-primary)' }}>Winners 🎉</h3>
             <p className="mt-2" style={{ color: 'var(--text-secondary)' }}>Your winners have been selected and saved.</p>
           </div>
-          <div className="flex flex-wrap gap-3">
-            {verificationId && (
-              <a href={`/verify/${verificationId}`} target="_blank"
-                className="h-12 px-5 rounded-xl font-black flex items-center hover:scale-[1.02] transition"
-                style={{ background: 'var(--accent)', color: 'var(--accent-on)' }}>
-                View Winner Cards
-              </a>
-            )}
-            <button onClick={copyResults}
-              className="h-12 px-5 rounded-xl font-semibold transition"
-              style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', color: 'var(--text-primary)' }}>
-              Copy Results
-            </button>
-          </div>
+          <button onClick={copyResults}
+            className="h-11 px-5 rounded-xl font-semibold transition"
+            style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', color: 'var(--text-primary)' }}>
+            Copy Results
+          </button>
         </div>
+
+        {/* Winner list */}
         <div className="grid gap-4">
           {winners.map((winner, index) => (
             <div key={index} className="rounded-2xl p-5" style={{ background: 'var(--bg-tertiary)', border: '1px solid var(--border)' }}>
@@ -49,7 +43,48 @@ export default function WinnerCards({ winners, verificationId }: Props) {
             </div>
           ))}
         </div>
-        {!verificationId && <p className="mt-4 text-sm" style={{ color: 'var(--text-muted)' }}>Verification link will appear after the result is saved.</p>}
+
+        {/* ── Prominent Verify Winners CTA ── */}
+        {verificationId ? (
+          <motion.div
+            className="mt-8"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            <div className="rounded-2xl p-6 text-center" style={{ background: 'var(--bg-secondary)', border: '2px solid var(--accent-border)' }}>
+              <div className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-bold uppercase tracking-[0.15em] mb-4"
+                style={{ background: 'var(--success-soft)', border: '1px solid var(--success-border)', color: 'var(--success)' }}>
+                <span className="w-2 h-2 rounded-full" style={{ background: 'var(--success)' }} />
+                Results saved & verified
+              </div>
+
+              <p className="text-lg font-bold mb-2" style={{ color: 'var(--text-primary)' }}>
+                Download winner cards & share proof
+              </p>
+              <p className="text-sm mb-6 max-w-md mx-auto" style={{ color: 'var(--text-muted)' }}>
+                Visit the verification page to download winner cards in multiple templates, share on social media, and get your public proof link.
+              </p>
+
+              <a
+                href={`/verify/${verificationId}`}
+                target="_blank"
+                className="inline-flex items-center justify-center gap-3 h-14 px-10 rounded-2xl font-black text-lg hover:scale-[1.03] transition"
+                style={{ background: 'var(--accent)', color: 'var(--accent-on)', boxShadow: 'var(--shadow-accent)' }}
+              >
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M9 12l2 2 4-4" />
+                  <circle cx="12" cy="12" r="10" />
+                </svg>
+                Verify Winners
+              </a>
+            </div>
+          </motion.div>
+        ) : (
+          <p className="mt-6 text-sm text-center" style={{ color: 'var(--text-muted)' }}>
+            Saving results... verification link will appear shortly.
+          </p>
+        )}
       </div>
     </section>
   );

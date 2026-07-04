@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { motion } from "framer-motion";
 
 import Hero from "../components/Hero";
 import VideoInfo from "../components/VideoInfo";
@@ -31,6 +32,8 @@ export default function HomePage() {
   const [emoji, setEmoji] = useState("");
   const [verificationId, setVerificationId] = useState("");
   const [history, setHistory] = useState<any[]>([]);
+  // Controls whether the pick-winner flow (filters + pick button) is visible
+  const [showPickerFlow, setShowPickerFlow] = useState(false);
 
   const validEntries = useMemo(() => {
     if (!videoData?.comments?.length) return [];
@@ -39,6 +42,11 @@ export default function HomePage() {
       timeWindowMinutes, videoPublishedAt: videoData.meta.publishedAt,
     });
   }, [videoData, keyword, removeDuplicates, emoji, timeWindowMinutes]);
+
+  // The most recent draw's verification ID (from history)
+  const latestVerificationId = history.length > 0 ? history[0]?.verification_id : null;
+  // Whether this video already has previous winners
+  const hasExistingWinners = history.length > 0;
 
   async function loadHistory(videoId: string) {
     try {
@@ -50,7 +58,7 @@ export default function HomePage() {
 
   async function handleLoadComments() {
     try {
-      setLoading(true); setWinners([]);
+      setLoading(true); setWinners([]); setShowPickerFlow(false);
       const res = await fetch("/api/comments", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ videoUrl }) });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || "Failed to load comments.");
@@ -103,24 +111,109 @@ export default function HomePage() {
           <VideoInfo title={videoData.meta.title} channelTitle={videoData.meta.channelTitle}
             thumbnailUrl={videoData.meta.thumbnailUrl} totalComments={videoData.totalComments} />
 
-          <WinnerSettings
-            keyword={keyword} setKeyword={setKeyword} emoji={emoji} setEmoji={setEmoji}
-            winnersCount={winnersCount} setWinnersCount={setWinnersCount}
-            customWinnersCount={customWinnersCount} setCustomWinnersCount={setCustomWinnersCount}
-            removeDuplicates={removeDuplicates} setRemoveDuplicates={setRemoveDuplicates}
-            showEmojiPicker={showEmojiPicker} setShowEmojiPicker={setShowEmojiPicker}
-            timeWindowMinutes={timeWindowMinutes} setTimeWindowMinutes={setTimeWindowMinutes}
-            customMinutes={customMinutes} setCustomMinutes={setCustomMinutes}
-            validEntriesCount={validEntries.length}
-          />
+          {/*
+            DECISION POINT:
+            - If video HAS existing winners AND user hasn't clicked "Pick New Winners" → show dual buttons
+            - If video has NO existing winners OR user clicked "Pick New Winners" → show filter/pick flow
+          */}
 
-          <section className="max-w-5xl mx-auto px-6 mt-6">
-            <button onClick={handlePickWinner}
-              className="w-full h-14 rounded-2xl font-bold hover:scale-[1.01] transition"
-              style={{ background: 'var(--accent)', color: 'var(--accent-on)', boxShadow: 'var(--shadow-accent)' }}>
-              Pick Winner
-            </button>
-          </section>
+          {hasExistingWinners && !showPickerFlow && winners.length === 0 ? (
+            /* ── Scenario B: Video already has winners — show dual action buttons ── */
+            <motion.section
+              className="max-w-5xl mx-auto px-6 mt-10"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              <div className="rounded-3xl p-8 text-center" style={{ background: 'var(--bg-card)', border: '1px solid var(--border)' }}>
+                <div className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-bold uppercase tracking-[0.15em] mb-5"
+                  style={{ background: 'var(--accent-soft)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)' }}>
+                  <span className="w-2 h-2 rounded-full" style={{ background: 'var(--success)' }} />
+                  This video has {history.length} previous giveaway draw{history.length > 1 ? 's' : ''}
+                </div>
+
+                <h3 className="text-2xl md:text-3xl font-black" style={{ color: 'var(--text-primary)' }}>
+                  Winners Already Selected
+                </h3>
+                <p className="mt-3 max-w-lg mx-auto" style={{ color: 'var(--text-secondary)' }}>
+                  This video already has giveaway results saved. View the existing winners or start a new draw with fresh filters.
+                </p>
+
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
+                  {/* Button 1: See Selected Winners → goes to latest verification page */}
+                  <a
+                    href={`/verify/${latestVerificationId}`}
+                    target="_blank"
+                    className="w-full sm:w-auto h-14 px-8 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 hover:scale-[1.02] transition"
+                    style={{ background: 'var(--accent)', color: 'var(--accent-on)', boxShadow: 'var(--shadow-accent)' }}
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M9 12l2 2 4-4" />
+                      <circle cx="12" cy="12" r="10" />
+                    </svg>
+                    See Selected Winners
+                  </a>
+
+                  {/* Button 2: Pick New Winners → opens filter/pick flow */}
+                  <button
+                    onClick={() => setShowPickerFlow(true)}
+                    className="w-full sm:w-auto h-14 px-8 rounded-2xl font-bold text-lg flex items-center justify-center gap-3 hover:scale-[1.02] transition"
+                    style={{ background: 'var(--bg-tertiary)', border: '2px solid var(--accent-border)', color: 'var(--accent-text)' }}
+                  >
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.66 0 3-4.03 3-9s-1.34-9-3-9m0 18c-1.66 0-3-4.03-3-9s1.34-9 3-9" />
+                    </svg>
+                    Pick New Winners
+                  </button>
+                </div>
+
+                {/* Quick preview of latest winners */}
+                {history[0]?.winners?.length > 0 && (
+                  <div className="mt-8 flex flex-wrap items-center justify-center gap-2">
+                    <span className="text-sm" style={{ color: 'var(--text-muted)' }}>Latest winners:</span>
+                    {history[0].winners.map((w: any, i: number) => (
+                      <span key={i} className="px-3 py-1.5 rounded-full text-sm font-semibold"
+                        style={{ background: 'var(--accent-soft)', border: '1px solid var(--accent-border)', color: 'var(--accent-text)' }}>
+                        #{i + 1} {w.authorName}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </motion.section>
+          ) : (
+            /* ── Scenario A: No existing winners OR user clicked "Pick New Winners" — show filter/pick flow ── */
+            <>
+              <WinnerSettings
+                keyword={keyword} setKeyword={setKeyword} emoji={emoji} setEmoji={setEmoji}
+                winnersCount={winnersCount} setWinnersCount={setWinnersCount}
+                customWinnersCount={customWinnersCount} setCustomWinnersCount={setCustomWinnersCount}
+                removeDuplicates={removeDuplicates} setRemoveDuplicates={setRemoveDuplicates}
+                showEmojiPicker={showEmojiPicker} setShowEmojiPicker={setShowEmojiPicker}
+                timeWindowMinutes={timeWindowMinutes} setTimeWindowMinutes={setTimeWindowMinutes}
+                customMinutes={customMinutes} setCustomMinutes={setCustomMinutes}
+                validEntriesCount={validEntries.length}
+              />
+
+              <section className="max-w-5xl mx-auto px-6 mt-6">
+                <button onClick={handlePickWinner}
+                  className="w-full h-14 rounded-2xl font-bold hover:scale-[1.01] transition"
+                  style={{ background: 'var(--accent)', color: 'var(--accent-on)', boxShadow: 'var(--shadow-accent)' }}>
+                  {hasExistingWinners ? 'Pick New Winners' : 'Pick Winner'}
+                </button>
+
+                {/* If user came from "Pick New Winners" flow, show a back option */}
+                {hasExistingWinners && showPickerFlow && winners.length === 0 && (
+                  <button
+                    onClick={() => setShowPickerFlow(false)}
+                    className="w-full mt-3 h-11 rounded-xl font-semibold transition text-sm"
+                    style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', color: 'var(--text-secondary)' }}>
+                    ← Back to existing winners
+                  </button>
+                )}
+              </section>
+            </>
+          )}
 
           <WinnerReveal revealing={revealing} revealName={revealName} />
           <WinnerCards winners={winners} verificationId={verificationId} />
