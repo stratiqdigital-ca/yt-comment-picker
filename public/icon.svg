@@ -3,18 +3,18 @@
   <rect width="512" height="512" rx="110" fill="#111827"/>
 
   <!-- Comment bubble body -->
-  <rect x="80" y="130" width="310" height="210" rx="52" fill="#0B0F19" stroke="#a3e635" stroke-width="12"/>
+  <rect x="80" y="130" width="310" height="210" rx="52" fill="#0B0F19" stroke="#7C5CFC" stroke-width="12"/>
   <!-- Bubble tail -->
-  <path d="M110 340 L110 420 L200 340 Z" fill="#0B0F19" stroke="#a3e635" stroke-width="12" stroke-linejoin="round"/>
+  <path d="M110 340 L110 420 L200 340 Z" fill="#0B0F19" stroke="#7C5CFC" stroke-width="12" stroke-linejoin="round"/>
 
   <!-- Comment lines inside bubble -->
-  <rect x="116" y="196" width="160" height="24" rx="12" fill="#a3e635"/>
-  <rect x="116" y="242" width="110" height="24" rx="12" fill="#a3e635" opacity="0.4"/>
-  <rect x="116" y="288" width="136" height="24" rx="12" fill="#a3e635" opacity="0.2"/>
+  <rect x="116" y="196" width="160" height="24" rx="12" fill="#7C5CFC"/>
+  <rect x="116" y="242" width="110" height="24" rx="12" fill="#7C5CFC" opacity="0.4"/>
+  <rect x="116" y="288" width="136" height="24" rx="12" fill="#7C5CFC" opacity="0.2"/>
 
   <!-- Trophy badge — top right of bubble -->
-  <circle cx="368" cy="148" r="80" fill="#0B0F19" stroke="#a3e635" stroke-width="12"/>
-  <circle cx="368" cy="148" r="64" fill="#a3e635"/>
+  <circle cx="368" cy="148" r="80" fill="#0B0F19" stroke="#7C5CFC" stroke-width="12"/>
+  <circle cx="368" cy="148" r="64" fill="#7C5CFC"/>
 
   <!-- Trophy cup body -->
   <rect x="342" y="114" width="52" height="46" rx="10" fill="#0B0F19"/>
@@ -30,5 +30,5 @@
   <rect x="338" y="182" width="60" height="10" rx="5" fill="#0B0F19"/>
 
   <!-- Star inside cup -->
-  <text x="368" y="154" text-anchor="middle" font-size="28" fill="#a3e635" font-family="sans-serif">★</text>
+  <text x="368" y="154" text-anchor="middle" font-size="28" fill="#7C5CFC" font-family="sans-serif">★</text>
 </svg>
